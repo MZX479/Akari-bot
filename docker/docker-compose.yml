@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  lenin:
+    image: localhost:5000/leninpr
+    restart: always
+    volumes:
+      - ./.env.production:/.env.production
+    networks:
+      - bd
+
+networks:
+  bd:
+    external: true

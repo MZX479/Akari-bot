@@ -1,0 +1,44 @@
+{
+  "name": "clean-slash-handler",
+  "owners": "mzx479, loli_knight",
+  "originally-created-by": "loli_knight",
+  "version": "1.0",
+  "description": "Custom slash handler for discord bots",
+  "main": "dist/Main.js",
+  "devDependencies": {
+    "@types/uuid": "^9.0.5",
+    "bun-types": "^1.0.2",
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "nodemon": "^2.0.20",
+    "typescript": "^5.0.0-beta",
+    "versionings": "^0.1.0-alfa.4"
+  },
+  "scripts": {
+    "build": "npx gulp",
+    "types": "tsc --pretty --skipLibCheck --noEmit",
+    "start:dev": "npm run types && npm run build && cd dist && node Main.js --dev --enable-source-maps",
+    "start:production": "npm run types && npm run build && npm start --enable-source-maps",
+    "start": "cd dist && node Main.js --enable-source-maps",
+    "dev:bun": "nodemon --watch \"./**\" --ignore \"./dist,./node_modules\" --ext \"ts,json,.env\" --exec \"bun run Main.ts --dev\" ",
+    "dev": "nodemon --watch \"./**\" --ignore \"./dist,./node_modules\" --ext \"ts,json,.env\" --exec \"npm run start:dev\" ",
+    "production": "npm run start:production"
+  },
+  "dependencies": {
+    "@discordjs/rest": "^1.1.0",
+    "child_process": "^1.0.2",
+    "chokidar": "^3.5.3",
+    "colors": "^1.4.0",
+    "discord.js": "^14.9.0",
+    "dotenv": "^16.0.2",
+    "fs": "*",
+    "mongodb": "^4.13.0",
+    "parse-duration": "^1.0.2",
+    "uuid": "^9.0.1"
+  },
+  "license": "ISC",
+  "prettier": {
+    "singleQuote": true
+  }
+}

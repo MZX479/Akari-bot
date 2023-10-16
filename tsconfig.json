@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "esnext", "ES2022", "ESNext"],
+    "types": ["node"],
+    "typeRoots": ["node_modules/@types"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "resolveJsonModule": true,
+    "importHelpers": true,
+    "baseUrl": "src",
+    "outDir": "dist",
+    "inlineSourceMap": true,
+    "paths": {
+      "#config": ["./config/config"],
+      "#dev_config": ["./config/dev_config"],
+      "#types": ["types"],
+      "@/*": ["./*"]
+    },
+    "plugins": [
+      {
+        "transform": "@zerollup/ts-transform-paths",
+        "exclude": ["*"]
+      }
+    ]
+  },
+  "include": ["src"],
+  "exclude": ["dist"]
+}

@@ -1,0 +1,25 @@
+import { InteractionTemplate } from '@/config/templates';
+import { Slash } from '@/decorators';
+
+import { CommandInteraction } from 'discord.js';
+
+@Slash({
+  data: {
+    name: 'EXAMPLE',
+    description: 'EXAMPLE',
+  },
+  type: 'Example',
+})
+class Command extends InteractionTemplate {
+  interaction: CommandInteraction;
+
+  constructor(interaction: CommandInteraction) {
+    super(interaction);
+    this.interaction = interaction;
+    this.execute();
+  }
+
+  private async execute() {
+    return;
+  }
+}
