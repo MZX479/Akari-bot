@@ -162,10 +162,26 @@ export type user_type = Partial<{
   cooldowns: {};
 }>;
 
-export type logType = {
+export type rulesLogType = {
   title: string;
   author: GuildMember;
   content: string;
-  msgId?: string;
-  time: Date;
+  logId?: string;
+};
+
+export type giveawayLogType = {
+  creator: GuildMember;
+  sponsor: GuildMember;
+  card: string;
+  timer: number;
+  description: string;
+  logId?: string;
+};
+
+export type bountyLogType = {
+  author: GuildMember;
+  card: string;
+  bounty: number;
+  description: string;
+  logId?: string;
 };
