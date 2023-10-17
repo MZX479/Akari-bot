@@ -2,7 +2,7 @@ import { config_type } from '#types';
 
 const config: config_type = {
   modules: {
-    message_context: true,
+    message: true,
     slash: true,
     user_context: true,
   },

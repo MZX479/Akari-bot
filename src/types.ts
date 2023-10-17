@@ -5,6 +5,7 @@ import {
   CommandInteraction,
   EmbedBuilder,
   GuildMember,
+  Message,
   PermissionResolvable,
   SlashCommandBuilder,
   User,
@@ -76,6 +77,32 @@ export type PageWithComponentsType = {
   buttons?: ButtonBuilder[];
 };
 
+export type MessageDecoratorDataType = {
+  name: string;
+};
+
+export type MessageDecoratorArgsType = {
+  data: MessageDecoratorDataType;
+  permissions?: SlashDecoratorPermissionsType;
+  dev_permissions?: SlashDecoratorPermissionsType;
+  type: CommandModuleType;
+  disabled?: boolean;
+  dev_disabled?: boolean;
+};
+
+export type MessageDecoratorPlate = {
+  data?: MessageDecoratorDataType;
+  dev_permissions?: SlashDecoratorPermissionsType | undefined;
+  permissions?: SlashDecoratorPermissionsType | undefined;
+
+  new (interaction: Message): {};
+};
+
+export type MessageLoaderCommandType = {
+  command: MessageDecoratorPlate;
+  payload: MessageDecoratorArgsType;
+};
+
 export type CommandModuleType =
   | 'Shop'
   | 'Games'
@@ -85,7 +112,7 @@ export type CommandModuleType =
 
 export type config_type = {
   modules: {
-    message_context: boolean;
+    message: boolean;
     slash: boolean;
     user_context: boolean;
   };
