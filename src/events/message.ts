@@ -1,4 +1,4 @@
-import { MessageTemplate } from '@/config/templates/MessageTemplate copy';
+import { MessageTemplate } from '@/config/templates/MessageTemplate';
 import { HandleErrorAsync, MessageCreate } from '@/decorators';
 import { MessageLoader } from '@/loaders/MessageLoader';
 import { GuildMemberRoleManager, Message } from 'discord.js';
