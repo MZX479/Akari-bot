@@ -212,3 +212,17 @@ export type bountyLogType = {
   description: string;
   logId?: string;
 };
+
+export type DbNote = {
+  _id?: ObjectId;
+  author: string;
+  msgId: string;
+  content: {
+    sponsor?: string;
+    card?: string;
+    bounty?: string;
+    bountyStatus?: string;
+    giveawayStatus?: string;
+    description: string;
+  };
+};

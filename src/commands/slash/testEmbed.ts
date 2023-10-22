@@ -1,6 +1,6 @@
 import { InteractionTemplate } from '@/config/templates';
 import { Slash } from '@/decorators';
-import { EmbedLogger } from '@/tools/EmbedLoggerController';
+import { EmbedLogger } from '@/tools/MainController';
 
 import { CommandInteraction, Guild, GuildMember } from 'discord.js';
 
