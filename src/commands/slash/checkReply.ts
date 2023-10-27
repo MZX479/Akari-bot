@@ -51,7 +51,7 @@ class Command extends InteractionTemplate {
     return new EmbedBuilder()
       .setTitle('Check')
       .setColor(Colors.Green)
-      .setDescription('> **Pong!**}')
+      .setDescription('> **Pong!**')
       .setTimestamp(new Date())
       .setFooter({
         text: `Requested by ${this.author.username}`,

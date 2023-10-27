@@ -1,48 +1,38 @@
-import { DbNote, bountyLogType, giveawayLogType, rulesLogType } from '#types';
-import { MessageTemplate } from '@/config/templates';
-import { HandleErrorSecondaryAsync } from '@/decorators';
+import { DbNote } from '#types';
+import { InteractionTemplate } from '@/config/templates';
+import { HandleErrorSecondary, HandleErrorSecondaryAsync } from '@/decorators';
 import {
-  Colors,
   Guild,
-  Message,
   EmbedBuilder,
   TextChannel,
-  time,
+  CommandInteraction,
+  TextInputBuilder,
+  ModalBuilder,
+  ActionRowBuilder,
 } from 'discord.js';
-import { discharge } from '@/tools';
 import { MongoClient } from '@/Main';
 import { Collection, Db } from 'mongodb';
 
-export class MainController extends MessageTemplate {
+export class MainController extends InteractionTemplate {
   private _db: Db;
   private _collection: Collection;
-  private _collection_name: string | null = null;
   private _guild: Guild;
-  constructor(message: Message, guild: Guild) {
-    super(message);
+  interaction: CommandInteraction;
+  constructor(
+    interaction: CommandInteraction,
+    guild: Guild,
+    collectionName: string
+  ) {
+    super(interaction);
     this._guild = guild;
-    this._collection_name;
     this._db = MongoClient.db(guild.id);
-    this._collection = this._db.collection(this._collection_name as string);
-    this.message = message;
+    this._collection = this._db.collection(collectionName);
+    this.interaction = interaction;
   }
 
   @HandleErrorSecondaryAsync()
-  async logSender(content: EmbedBuilder, channelId: string) {
-    if (!content || !channelId)
-      throw new Error('Content or channelId were not provided, [logSender]');
-
-    const channel = this.message.guild!.channels.cache.get(channelId);
-    if (!channel) throw new Error('Channel does not exist!');
-
-    return await (channel as TextChannel).send({ embeds: [content] });
-  }
-
-  @HandleErrorSecondaryAsync()
-  async createDbNote(data: DbNote, collection: string) {
+  async createDbNote(data: DbNote) {
     if (!data) throw new Error('Db data was not provided, [createDbNote]');
-
-    this._collection_name = collection;
 
     const { author, msgId, content } = data;
 
@@ -54,10 +44,8 @@ export class MainController extends MessageTemplate {
   }
 
   @HandleErrorSecondaryAsync()
-  async updateDbNote(data: DbNote, collection: string) {
+  async updateDbNote(data: DbNote) {
     if (!data) throw new Error('Db data was not provided, [updateDbNote]');
-
-    this._collection_name = collection;
 
     const { msgId, content } = data;
 
@@ -74,43 +62,23 @@ export class MainController extends MessageTemplate {
   }
 
   @HandleErrorSecondaryAsync()
-  async deleteDbNote(data: DbNote, collection: string) {
-    if (!data) throw new Error('Db data was not provided, [deleteDbNote]');
+  async embedSender(content: EmbedBuilder, channel: TextChannel) {
+    if (!content || !channel)
+      throw new Error('Content or channel were not provided, [embedSender]');
 
-    this._collection_name = collection;
-
-    const { msgId } = data;
-    if (!msgId) throw new Error('msgId was not provided!');
-
-    return await this._collection.deleteOne({ msgId });
+    return await channel.send({ embeds: [content] });
   }
 
   @HandleErrorSecondaryAsync()
-  async embedSender(content: EmbedBuilder, channelId: string) {
-    if (!content || !channelId)
-      throw new Error('Content or channelId were not provided, [embedSender]');
-
-    const channel = this.message.guild!.channels.cache.get(channelId);
-    if (!channel) throw new Error('Channel does not exist!');
-
-    return await (channel as TextChannel).send({ embeds: [content] });
-  }
-
-  @HandleErrorSecondaryAsync()
-  async embedEditor(
+  async embedUpdate(
     content: EmbedBuilder,
-    channelId: string,
+    channel: TextChannel,
     messageId: string
   ) {
-    if (!content || !channelId)
+    if (!content || !channel)
       throw new Error('Content or channel were not provided, [embedEditor]');
 
-    const channel = this.message.guild!.channels.cache.get(channelId);
-    if (!channel) throw new Error('Channel does not exist!');
-
-    const currentMessage = await (channel as TextChannel).messages.fetch(
-      messageId
-    );
+    const currentMessage = await channel.messages.fetch(messageId);
     if (!currentMessage) throw new Error('Message does not exist!');
 
     return await currentMessage.edit({ embeds: [content] });
@@ -119,20 +87,34 @@ export class MainController extends MessageTemplate {
   @HandleErrorSecondaryAsync()
   async embedRemover(
     content: EmbedBuilder,
-    channelId: string,
+    channel: TextChannel,
     messageId: string
   ) {
-    if (!content || !channelId)
+    if (!content || !channel)
       throw new Error('Content or channelId were not provided, [embedRemover]');
 
-    const channel = this.message.guild!.channels.cache.get(channelId);
-    if (!channel) throw new Error('Channel does not exist!');
-
-    const currentMessage = await (channel as TextChannel).messages.fetch(
-      messageId
-    );
+    const currentMessage = await channel.messages.fetch(messageId);
     if (!currentMessage) throw new Error('Message does not exist!');
 
     return await currentMessage.delete();
+  }
+
+  @HandleErrorSecondaryAsync()
+  async modalCreate(data: TextInputBuilder): Promise<ModalBuilder> {
+    if (!data) throw new Error('Data was not provided!');
+
+    const modal = new ModalBuilder()
+      .setCustomId('descriptionsModal')
+      .setTitle('Describe if it needs to.');
+
+    const inputField = data;
+
+    const row = new ActionRowBuilder<TextInputBuilder>().addComponents(
+      inputField
+    );
+
+    modal.addComponents(row);
+
+    return modal;
   }
 }

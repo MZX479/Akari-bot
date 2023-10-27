@@ -14,7 +14,7 @@ import {
   },
   type: 'Utility',
 })
-class StatusMessage extends MessageTemplate {
+class Command extends MessageTemplate {
   private readonly max_amount: 100 = 100;
   private messageArgs: Array<string>;
   constructor(message: Message) {

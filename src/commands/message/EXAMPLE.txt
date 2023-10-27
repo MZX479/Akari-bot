@@ -1,0 +1,21 @@
+import { MessageTemplate } from '@/config/templates/MessageTemplate';
+import { PrefixMessage } from '@/decorators';
+import { Message } from 'discord.js';
+
+@PrefixMessage({
+  data: {
+    name: 'EXAMPLE',
+  },
+  type: 'Utility',
+})
+class StatusMessage extends MessageTemplate {
+  private messageArgs: Array<string>;
+  constructor(message: Message) {
+    super(message);
+    this.messageArgs = this.msgArgs();
+    this.execute(message, this.messageArgs);
+  }
+
+  async execute(message: Message, args: Array<string>) {
+  }
+}

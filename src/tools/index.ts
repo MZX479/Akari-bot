@@ -9,3 +9,4 @@ export * from './FormatError';
 export * from './CheckValue';
 export * from './Percentage';
 export * from './RoleColors';
+export * from './BountyController';

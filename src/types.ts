@@ -122,81 +122,23 @@ export type config_type = {
   owner: string;
   guild_id: string;
   allowed_modules: CommandModuleType[];
-
-  shop: {
-    max_item_price: number;
-    min_item_price: number;
-    max_item_name_length: number;
-    min_item_name_length: number;
-    min_item_text_length: number;
-    max_item_text_length: number;
-  };
-};
-
-export type inventory_type = Array<{
-  _id: ObjectId;
-  amount: number;
-}>;
-
-export type warn_type = {
-  reason: '';
-  date: number;
-  moderator: string;
-};
-
-export type mute_type = {
-  reason: string;
-  date: number;
-  moderator: string;
-  roles: string[];
-  expire: number;
-  time: number;
-};
-
-export type ban_type = {
-  reason: string;
-  moderator: string;
-  date: number;
-  expire: number;
-};
-
-export type moderation_mute_type = {
-  id: string;
-  reason: string;
-  date: number;
-  moderator: string;
-  roles: string[];
-  expire: number;
-  actieve: boolean;
-  guild: string;
-};
-
-export type moderation_ban_type = {
-  id: string;
-  reason: string;
-  date: number;
-  expire: number;
-  moderator: string;
-  guild: string;
-  actieve: boolean;
 };
 
 export type user_type = Partial<{
   id: string;
-  balance: number;
-  inventory: inventory_type;
-  role: '';
-  cooldowns: {};
+  cooldowns: {
+    bounty: number;
+  };
 }>;
 
-export type rulesLogType = {
+export type rulesType = {
   title: string;
   author: GuildMember;
   content: string;
   logId?: string;
 };
 
-export type giveawayLogType = {
+export type giveawayType = {
   creator: GuildMember;
   sponsor: GuildMember;
   card: string;
@@ -205,7 +147,7 @@ export type giveawayLogType = {
   logId?: string;
 };
 
-export type bountyLogType = {
+export type bountyType = {
   author: GuildMember;
   card: string;
   bounty: number;
