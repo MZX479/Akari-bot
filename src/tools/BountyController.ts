@@ -19,7 +19,7 @@ export class BountyController extends MainController {
     return new EmbedBuilder();
   }
 
-  getBountyChannel(): TextChannel {
+  private getBountyChannel(): TextChannel {
     const channelId = process.env.BOUNTY_CHANNEL_ID;
     if (!channelId) throw new Error('Bounty channel id does not exist!');
 
@@ -31,7 +31,7 @@ export class BountyController extends MainController {
     return channel;
   }
 
-  getBountyLogChannel(): TextChannel {
+  private getBountyLogChannel(): TextChannel {
     const channelId = process.env.BOUNTY_LOGS_CHANNEL_ID;
     if (!channelId) throw new Error('Bounty log channel id does not exist!');
 

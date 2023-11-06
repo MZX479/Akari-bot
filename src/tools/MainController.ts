@@ -34,11 +34,10 @@ export class MainController extends InteractionTemplate {
   async createDbNote(data: DbNote) {
     if (!data) throw new Error('Db data was not provided, [createDbNote]');
 
-    const { author, msgId, content } = data;
+    const { author, content } = data;
 
     return await this._collection.insertOne({
       author,
-      msgId,
       content,
     });
   }
@@ -47,11 +46,11 @@ export class MainController extends InteractionTemplate {
   async updateDbNote(data: DbNote) {
     if (!data) throw new Error('Db data was not provided, [updateDbNote]');
 
-    const { msgId, content } = data;
+    const { author, content } = data;
 
     return await this._collection.updateOne(
       {
-        msgId,
+        author,
       },
       {
         $set: {

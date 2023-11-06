@@ -8,7 +8,6 @@ import {
   Message,
   PermissionResolvable,
   SlashCommandBuilder,
-  User,
 } from 'discord.js';
 
 export type CustomError = Error & { from: string[] };
@@ -148,9 +147,9 @@ export type giveawayType = {
 };
 
 export type bountyType = {
-  author: GuildMember;
-  card: string;
-  bounty: number;
+  author: string;
+  target: string;
+  reward: string;
   description: string;
   logId?: string;
 };
@@ -158,13 +157,33 @@ export type bountyType = {
 export type DbNote = {
   _id?: ObjectId;
   author: string;
-  msgId: string;
   content: {
     sponsor?: string;
     card?: string;
     bounty?: string;
-    bountyStatus?: string;
-    giveawayStatus?: string;
+    bountyStatus?: 'active' | 'done' | 'canceled';
+    giveawayStatus?: 'active' | 'done';
     description: string;
   };
+};
+
+export type bountyLogType = {
+  author: string;
+  target: string;
+  reward: string;
+  description: string;
+  msgId: string;
+};
+
+export type giveawayLogType = {
+  creator: string;
+  sponsor: string;
+  time: number;
+  card: string;
+  description: string;
+};
+
+export type ruleLogType = {
+  author: string;
+  description: string;
 };

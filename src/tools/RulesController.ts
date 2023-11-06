@@ -76,20 +76,6 @@ export class RulesController extends MainController {
     return await message.delete();
   }
 
-  async createRulesDbNote(data: DbNote) {
-    if (!data)
-      throw new Error('Data was not provided, [createRulesDbNotel (Rules)]');
-
-    return await this.createDbNote(data);
-  }
-
-  async updateRulesDbNote(data: DbNote) {
-    if (!data)
-      throw new Error('Data was not provided, [updateRulesDbNotel (Rules)]');
-
-    return await this.updateDbNote(data);
-  }
-
   async rulesLogCreate(embed: EmbedBuilder) {
     if (!embed) throw new Error('Embed was not provided! [rulesLogCreate]');
 

@@ -23,11 +23,11 @@ export function handle_error<T extends object>(
 
   const result = [
     {
-      name: `🛠️ Расположение ошибки:`,
+      name: `🛠️ Place:`,
       value: `>>> \`${view_from}\``,
     },
     {
-      name: '📄 Содержание ошибки:',
+      name: '📄 Error description:',
       value: `\`\`\`${err.toString()}\`\`\``,
     },
   ];
@@ -35,18 +35,18 @@ export function handle_error<T extends object>(
   if (data)
     try {
       result.push({
-        name: '📌 Дополнительные параметры:',
+        name: '📌 Extra:',
         value: `\`\`\`${JSON.stringify(data, null, '\t')}\`\`\``,
       });
     } catch (e) {
       result.push({
-        name: '📌 Дополнительные параметры:',
-        value: `\`\`\`Возникла ошибка при обработке доп. параметров\`\`\``,
+        name: '📌 Extra:',
+        value: `\`\`\`An error occured via handling parameters!\`\`\``,
       });
     }
 
   const error_embed = new EmbedBuilder()
-    .setTitle('⚠️ Произошла ошибка в работе бота:')
+    .setTitle('⚠️ An error occured:')
     .addFields(...result)
     .setColor('#DF1515');
 
@@ -55,7 +55,7 @@ export function handle_error<T extends object>(
     if (!owner)
       return console.error("[handle_error] Channel for erros doesn't defined");
     owner.send({
-      content: `> :warning: Канал для ошибок не указан!\n\n`,
+      content: `> :warning: Errors channel was not provided!\n\n`,
       embeds: [error_embed],
     });
 
