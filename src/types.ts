@@ -132,26 +132,20 @@ export type user_type = Partial<{
 
 export type rulesType = {
   title: string;
-  author: GuildMember;
   content: string;
-  logId?: string;
 };
 
 export type giveawayType = {
-  creator: GuildMember;
   sponsor: GuildMember;
   card: string;
   timer: number;
   description: string;
-  logId?: string;
 };
 
 export type bountyType = {
-  author: string;
   target: string;
   reward: string;
   description: string;
-  logId?: string;
 };
 
 export type DbNote = {
@@ -168,7 +162,6 @@ export type DbNote = {
 };
 
 export type bountyLogType = {
-  author: string;
   target: string;
   reward: string;
   description: string;
@@ -176,14 +169,15 @@ export type bountyLogType = {
 };
 
 export type giveawayLogType = {
-  creator: string;
   sponsor: string;
   time: number;
   card: string;
   description: string;
+  msgId: string;
 };
 
-export type ruleLogType = {
-  author: string;
+export type rulesLogType = {
+  title: string;
   description: string;
+  msgId: string;
 };

@@ -6,7 +6,7 @@ import {
   HandleErrorSecondaryAsync,
   Slash,
 } from '@/decorators';
-import { BountyController, discharge } from '@/tools';
+import { BountyController } from '@/tools';
 
 import {
   Colors,
@@ -15,7 +15,6 @@ import {
   GuildMember,
   ModalBuilder,
   SlashCommandBuilder,
-  SlashCommandNumberOption,
   SlashCommandStringOption,
   TextInputBuilder,
   TextInputStyle,
@@ -84,7 +83,6 @@ class Command extends InteractionTemplate {
     if (!description) throw new Error('Description does not exist!');
 
     const bountyEmbed = await this.createBountyEmbed({
-      author: this.author.user.id,
       description,
       reward,
       target,
@@ -96,7 +94,6 @@ class Command extends InteractionTemplate {
     const bountyEmbedSender = await this.sendBounty(bountyEmbed);
 
     const logEmbed = await this.createLog({
-      author: this.author.user.id,
       description,
       reward,
       target,
@@ -130,7 +127,7 @@ class Command extends InteractionTemplate {
         'Data was not provided! [createBountyEmbed (createBounty)]'
       );
 
-    const { author, target, reward, description } = data;
+    const { target, reward, description } = data;
 
     const embed = this.getEmbed()
       .setColor(Colors.Yellow)
@@ -145,7 +142,7 @@ class Command extends InteractionTemplate {
       .addFields(
         {
           name: 'Author:',
-          value: `<@${author}>`,
+          value: `<@${this.author.user.id}>`,
         },
         {
           name: 'Target:',
@@ -163,7 +160,8 @@ class Command extends InteractionTemplate {
           name: 'Description:',
           value: `\`${description}\``,
         }
-      );
+      )
+      .setTimestamp(new Date());
 
     return embed;
   }
@@ -180,7 +178,7 @@ class Command extends InteractionTemplate {
     if (!data)
       throw new Error('Data was not provided! [createLog (createBounty)]');
 
-    const { author, target, reward, msgId, description } = data;
+    const { target, reward, msgId, description } = data;
 
     const embed = this.getEmbed()
       .setAuthor({
@@ -195,7 +193,7 @@ class Command extends InteractionTemplate {
       .addFields(
         {
           name: 'Author:',
-          value: `<@${author}>`,
+          value: `<@${this.author.user.id}>`,
         },
         {
           name: 'Target:',
@@ -217,7 +215,8 @@ class Command extends InteractionTemplate {
           name: 'Message Id:',
           value: `\`${msgId}\``,
         }
-      );
+      )
+      .setTimestamp(new Date());
 
     return embed;
   }

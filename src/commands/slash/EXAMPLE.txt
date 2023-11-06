@@ -1,14 +1,14 @@
 import { InteractionTemplate } from '@/config/templates';
 import { Slash } from '@/decorators';
 
-import { CommandInteraction } from 'discord.js';
+import { CommandInteraction, SlashCommandBuilder } from 'discord.js';
 
 @Slash({
-  data: {
-    name: 'EXAMPLE',
-    description: 'EXAMPLE',
-  },
-  type: 'Example',
+  data: new SlashCommandBuilder()
+    .setName('EXAMPLE')
+    .setDescription('EXAMPLE')
+    .toJSON(),
+  type: 'Utility',
 })
 class Command extends InteractionTemplate {
   interaction: CommandInteraction;

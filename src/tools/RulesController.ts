@@ -15,7 +15,7 @@ export class RulesController extends MainController {
     this.interaction = interaction;
   }
 
-  getRulesEmbed(): EmbedBuilder {
+  getEmbed(): EmbedBuilder {
     return new EmbedBuilder();
   }
 
