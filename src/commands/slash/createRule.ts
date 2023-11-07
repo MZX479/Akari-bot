@@ -113,7 +113,7 @@ class Command extends InteractionTemplate {
     const embed = this.getEmbed()
       .setColor(Colors.Red)
       .setTitle(title)
-      .setDescription(`\`${content}\``)
+      .setDescription(content)
       .setTimestamp(new Date());
 
     return embed;
@@ -135,7 +135,10 @@ class Command extends InteractionTemplate {
       .setTitle(title)
       .addFields(
         { name: 'Author:', value: `<@${this.author.user.id}>` },
-        { name: 'Content', value: `\`${description}\`` },
+        {
+          name: 'Content',
+          value: description,
+        },
         { name: 'Message Id:', value: `\`${msgId}\`` }
       )
       .setTimestamp(new Date());

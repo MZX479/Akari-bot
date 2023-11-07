@@ -17,15 +17,8 @@ import {
 
 @Slash({
   data: new SlashCommandBuilder()
-    .setName('create-embed-title')
+    .setName('create-empty-embed')
     .setDescription('create small embed with only title')
-    .addStringOption(
-      new SlashCommandStringOption()
-        .setName('title')
-        .setMaxLength(20)
-        .setDescription('provide a title')
-        .setRequired(true)
-    )
     .addStringOption(
       new SlashCommandStringOption()
         .setName('channel-id')
@@ -84,6 +77,12 @@ import {
         )
         .setRequired(true)
     )
+    .addStringOption(
+      new SlashCommandStringOption()
+        .setName('channel-id')
+        .setDescription('provide a channel id')
+        .setRequired(true)
+    )
     .toJSON(),
   type: 'Utility',
 })
@@ -98,13 +97,10 @@ class Command extends InteractionTemplate {
 
   @HandleErrorAsync()
   private async execute() {
-    const title = this.get_argument('title').value as string;
     const channelId = this.get_argument('channel-id').value as string;
     const color = this.get_argument('color').value as string;
 
-    const embed = this.createEmbed()
-      .setColor(color as ColorResolvable)
-      .setTitle(title);
+    const embed = this.createEmbed().setColor(color as ColorResolvable);
 
     const channel = (await this.interaction.guild!.channels.fetch(
       channelId
