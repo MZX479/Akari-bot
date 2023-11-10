@@ -14,10 +14,10 @@ export function format_time(time: number) {
     const hours = diff_hours - diff_days * 24;
     const minutes = diff_mins - diff_hours * 60;
     const seconds = diff_secs - diff_mins * 60;
-    const label_days = days === 0 ? '' : `${days} дня(-ей) `;
-    const label_hours = hours === 0 ? '' : `${hours} часа(-ов) `;
-    const label_minuts = minutes === 0 ? '' : `${minutes} минут(-ы) `;
-    const label_seconds = seconds === 0 ? '' : `${seconds} секунд(-ы) `;
+    const label_days = days === 0 ? '' : `${days} days `;
+    const label_hours = hours === 0 ? '' : `${hours} hours `;
+    const label_minuts = minutes === 0 ? '' : `${minutes} minutes `;
+    const label_seconds = seconds === 0 ? '' : `${seconds} seconds `;
 
     const label = [label_days, label_hours, label_minuts, label_seconds]
       .join(' ')

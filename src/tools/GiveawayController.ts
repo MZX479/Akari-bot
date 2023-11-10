@@ -1,4 +1,7 @@
 import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   CommandInteraction,
   EmbedBuilder,
   Guild,
@@ -17,6 +20,13 @@ export class GiveawayController extends MainController {
 
   getGiveawayEmbed(): EmbedBuilder {
     return new EmbedBuilder();
+  }
+
+  getButton(): ButtonBuilder {
+    return new ButtonBuilder()
+      .setLabel('Participate')
+      .setStyle(ButtonStyle.Success)
+      .setCustomId('participate');
   }
 
   getGiveawayChannel(): TextChannel {
@@ -43,14 +53,18 @@ export class GiveawayController extends MainController {
     return channel;
   }
 
-  async giveawaySender(embed: EmbedBuilder) {
-    if (!embed) throw new Error('Embed was not provided!');
+  async giveawayCreate(embed: EmbedBuilder, button: ButtonBuilder) {
+    if (!embed || !button)
+      throw new Error('Embed or button were not provided!');
 
     const channel = this.getGiveawayChannel();
     if (!channel)
       throw new Error('Something went wrong. Giveaway channel does not exist!');
 
-    return await this.embedSender(embed, channel);
+    return await channel.send({
+      embeds: [embed],
+      components: [new ActionRowBuilder().addComponents(button) as any],
+    });
   }
 
   async giveawayEditor(embed: EmbedBuilder, messageId: string) {

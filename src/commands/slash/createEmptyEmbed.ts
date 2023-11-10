@@ -21,12 +21,6 @@ import {
     .setDescription('create small embed with only title')
     .addStringOption(
       new SlashCommandStringOption()
-        .setName('channel-id')
-        .setDescription('provide a channel id')
-        .setRequired(true)
-    )
-    .addStringOption(
-      new SlashCommandStringOption()
         .setName('color')
         .setDescription('provide a color')
         .setChoices(

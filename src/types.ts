@@ -151,6 +151,7 @@ export type bountyType = {
 export type DbNote = {
   _id?: ObjectId;
   author: string;
+  giveawayTime?: number;
   content: {
     sponsor?: string;
     card?: string;
@@ -169,8 +170,8 @@ export type bountyLogType = {
 };
 
 export type giveawayLogType = {
-  sponsor: string;
-  time: number;
+  sponsor: GuildMember;
+  timer: number;
   card: string;
   description: string;
   msgId: string;
