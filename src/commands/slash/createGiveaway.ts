@@ -97,7 +97,12 @@ class Command extends InteractionTemplate {
     await this.createDbNote({
       author: this.author.user.id,
       giveawayTime: newTime,
-      content: { description, card, giveawayStatus: 'active' },
+      content: {
+        description,
+        card,
+        giveawayStatus: 'active',
+        giveawayParticipants: [],
+      },
     });
 
     return await this.replyTrue('**Giveaway successfully created!**');

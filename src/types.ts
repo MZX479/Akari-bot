@@ -158,6 +158,7 @@ export type DbNote = {
     bounty?: string;
     bountyStatus?: 'active' | 'done' | 'canceled';
     giveawayStatus?: 'active' | 'done';
+    giveawayParticipants?: Array<string>;
     description: string;
   };
 };
