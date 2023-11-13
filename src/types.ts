@@ -152,6 +152,7 @@ export type DbNote = {
   _id?: ObjectId;
   author: string;
   giveawayTime?: number;
+  msgId?: string;
   content: {
     sponsor?: string;
     card?: string;

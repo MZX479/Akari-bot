@@ -97,6 +97,7 @@ class Command extends InteractionTemplate {
     await this.createDbNote({
       author: this.author.user.id,
       giveawayTime: newTime,
+      msgId: sendGiveaway.id,
       content: {
         description,
         card,

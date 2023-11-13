@@ -53,6 +53,13 @@ export class GiveawayController extends MainController {
     return channel;
   }
 
+  getGiveawayRoleId(): string {
+    const id = process.env.GIVEAWAY_ROLE_ID;
+    if (!id) throw new Error('GIVEAWAY_ROLE_ID does not exist!');
+
+    return id;
+  }
+
   async giveawayCreate(embed: EmbedBuilder, button: ButtonBuilder) {
     if (!embed || !button)
       throw new Error('Embed or button were not provided!');
@@ -62,6 +69,7 @@ export class GiveawayController extends MainController {
       throw new Error('Something went wrong. Giveaway channel does not exist!');
 
     return await channel.send({
+      content: ``,
       embeds: [embed],
       components: [new ActionRowBuilder().addComponents(button) as any],
     });
