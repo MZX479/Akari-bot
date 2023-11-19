@@ -99,6 +99,7 @@ class Command extends InteractionTemplate {
       giveawayTime: newTime,
       msgId: sendGiveaway.id,
       content: {
+        sponsor: sponsor.user.id,
         description,
         card,
         giveawayStatus: 'active',

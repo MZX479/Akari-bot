@@ -31,11 +31,23 @@ export class MainController extends InteractionTemplate {
   }
 
   @HandleErrorSecondaryAsync()
+  async getDbNote({ author, msgId }: { author?: string; msgId?: string }) {
+    if (!author && !msgId)
+      throw new Error('At least one of args has to be provided! [getDbNote]');
+
+    const query: Partial<Record<'author' | 'msgId', string>> = {};
+
+    if (author) query['author'] = author;
+    if (msgId) query['msgId'] = msgId;
+
+    return await this._collection.findOne<DbNote>(query);
+  }
+
+  @HandleErrorSecondaryAsync()
   async createDbNote(data: DbNote) {
     if (!data) throw new Error('Db data was not provided, [createDbNote]');
 
     const { author, giveawayTime, msgId, content } = data;
-    if (!giveawayTime || !msgId) return;
 
     return await this._collection.insertOne({
       author,

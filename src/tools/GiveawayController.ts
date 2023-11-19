@@ -64,12 +64,16 @@ export class GiveawayController extends MainController {
     if (!embed || !button)
       throw new Error('Embed or button were not provided!');
 
+    const roleId = this.getGiveawayRoleId();
+    if (!roleId)
+      throw new Error('Something went wrong. Giveaway role id does not exist!');
+
     const channel = this.getGiveawayChannel();
     if (!channel)
       throw new Error('Something went wrong. Giveaway channel does not exist!');
 
     return await channel.send({
-      content: ``,
+      content: `<@&${roleId}>`,
       embeds: [embed],
       components: [new ActionRowBuilder().addComponents(button) as any],
     });
@@ -96,6 +100,13 @@ export class GiveawayController extends MainController {
     if (!message) throw new Error('Message does not exist!');
 
     return await message.delete();
+  }
+
+  async getGiveawayDbNote(msgId: string) {
+    if (!msgId)
+      throw new Error('msgId was not provided! [getGiveawayDbNote (Giveaway)]');
+
+    return await this.getDbNote({ msgId });
   }
 
   async createGiveawayDbNote(data: DbNote) {

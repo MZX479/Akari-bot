@@ -155,6 +155,7 @@ export type DbNote = {
   msgId?: string;
   content: {
     sponsor?: string;
+    winner?: string;
     card?: string;
     bounty?: string;
     bountyStatus?: 'active' | 'done' | 'canceled';

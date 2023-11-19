@@ -308,7 +308,7 @@ export class InteractionTemplate {
   async unexpected_error() {
     try {
       await this.replyFalseH(
-        `При выполнении команды возникла непредвиненная ошибка.\nОбратитесь к <@${config.owner}>`
+        `An unexpected error occured.\nContact the <@${config.owner}>`
       );
     } catch (err) {
       handle_error(
