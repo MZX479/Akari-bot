@@ -1,7 +1,12 @@
 import config from '#config';
 import { DbNote } from '#types';
 import { MongoClient, client } from '@/Main';
-import { HandleError, HandleErrorSecondaryAsync, Ready } from '@/decorators';
+import {
+  HandleError,
+  HandleErrorSecondary,
+  HandleErrorSecondaryAsync,
+  Ready,
+} from '@/decorators';
 import { Colors, EmbedBuilder, Guild, TextChannel } from 'discord.js';
 
 @Ready()
@@ -189,6 +194,7 @@ class Event {
     }
   }
 
+  @HandleErrorSecondaryAsync()
   async getGiveawayChannel(guild: Guild): Promise<TextChannel> {
     const giveawayChannelId = process.env.GIVEAWAY_CHANNEL_ID;
 
@@ -209,14 +215,17 @@ class Event {
     return giveawayChannel;
   }
 
+  @HandleErrorSecondary()
   getEmbed(): EmbedBuilder {
     return new EmbedBuilder();
   }
 
+  @HandleErrorSecondaryAsync()
   async fetchAndReturnMessage(channel: TextChannel, messageId: string) {
     return await channel.messages.fetch(messageId);
   }
 
+  @HandleErrorSecondaryAsync()
   async getGiveawayLogChannel(guild: Guild): Promise<TextChannel> {
     const giveawayLogChannelId = process.env.GIVEAWAY_LOGS_CHANNEL_ID;
 

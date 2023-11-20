@@ -1,5 +1,5 @@
 import { MessageTemplate } from '@/config/templates/MessageTemplate';
-import { PrefixMessage } from '@/decorators';
+import { HandleErrorAsync, PrefixMessage } from '@/decorators';
 import { discharge } from '@/tools';
 import {
   EmbedBuilder,
@@ -23,6 +23,7 @@ class Command extends MessageTemplate {
     this.execute(message, this.messageArgs);
   }
 
+  @HandleErrorAsync()
   async execute(message: Message, args: Array<string>) {
     if (
       !(message.member!.permissions as Readonly<PermissionsBitField>).has(
@@ -43,9 +44,7 @@ class Command extends MessageTemplate {
 
     if (amount <= 0 || amount > 100) {
       return await this.replyFalse(
-        `Specified messages amount cannot be under 0 or more than ${discharge(
-          this.max_amount
-        )}`
+        'Specified messages amount cannot be under 0 or more than 100!'
       );
     }
 

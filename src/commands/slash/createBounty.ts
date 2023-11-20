@@ -105,6 +105,7 @@ class Command extends InteractionTemplate {
     await this.sendLogs(logEmbed);
     await this.createDbNote({
       author: this.author.user.id,
+      msgId: bountyEmbedSender.id,
       content: { description, bounty: target, bountyStatus: 'active' },
     });
 

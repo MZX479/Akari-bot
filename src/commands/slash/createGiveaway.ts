@@ -190,6 +190,7 @@ class Command extends InteractionTemplate {
     return await this.giveawaysController.giveawayLogCreate(embed);
   }
 
+  @HandleErrorSecondaryAsync()
   async createDbNote(data: DbNote) {
     if (!data)
       throw new Error('Data was not provided! [createDbNote (createGiveaway)]');

@@ -1,6 +1,10 @@
 import { DbNote } from '#types';
 import { InteractionTemplate } from '@/config/templates';
-import { HandleErrorAsync, InteractionCreate } from '@/decorators';
+import {
+  HandleErrorAsync,
+  HandleErrorSecondaryAsync,
+  InteractionCreate,
+} from '@/decorators';
 import { GiveawayController } from '@/tools/GiveawayController';
 import { CommandInteraction, Interaction } from 'discord.js';
 
@@ -25,25 +29,25 @@ class Event extends InteractionTemplate {
     const msgId = inter.message.id;
 
     const data = await this.getData(msgId);
-    console.log(data);
 
     if (!data) throw new Error('Giveaway data does not exist!');
 
     const { author, content } = data;
-    console.log(inter.user.id);
 
     content.giveawayParticipants!.push(inter.user.id);
 
     await this.updateData({ author, content });
-    await interaction.reply('done');
+    await interaction.reply({ content: '**Done!**', ephemeral: true });
   }
 
+  @HandleErrorSecondaryAsync()
   async getData(msgId: string) {
     if (!msgId) throw new Error('msgId was not provided!');
 
     return await this.giveawaysController.getGiveawayDbNote(msgId);
   }
 
+  @HandleErrorSecondaryAsync()
   async updateData(data: DbNote) {
     if (!data) throw new Error('Data was not provided!');
 

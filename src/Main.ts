@@ -17,6 +17,7 @@ export const client = new Client({
 import dev_config from '#dev_config';
 import prod_config from './config/config';
 import { SlashLoader } from './loaders';
+import { HandleErrorAsync, HandleErrorSecondaryAsync } from './decorators';
 
 const DEV = process.argv.includes('--dev');
 
@@ -56,6 +57,7 @@ class BotBuilder {
     this._start();
   }
 
+  @HandleErrorAsync()
   private async _start() {
     console.log(`Starting Bot...`.green);
     await this._load_mongoose();
@@ -77,6 +79,7 @@ class BotBuilder {
     console.log(`Bot succesfully started!`.green);
   }
 
+  @HandleErrorSecondaryAsync()
   async _load_mongoose() {
     console.group();
     console.log('Loading Mongoose');
@@ -93,6 +96,7 @@ class BotBuilder {
     console.groupEnd();
   }
 
+  @HandleErrorSecondaryAsync()
   async _load_commands(): Promise<void> {
     console.group();
     console.log('Loading commands');
@@ -125,6 +129,7 @@ class BotBuilder {
     console.groupEnd();
   }
 
+  @HandleErrorSecondaryAsync()
   async _load_events(): Promise<void> {
     console.group();
     console.log('Loading events');
@@ -144,6 +149,7 @@ class BotBuilder {
     console.groupEnd();
   }
 
+  @HandleErrorSecondaryAsync()
   async _post_commands(): Promise<void> {
     console.group();
     console.log('Pushing commands');
@@ -179,6 +185,7 @@ class BotBuilder {
     console.groupEnd();
   }
 
+  @HandleErrorSecondaryAsync()
   async _login() {
     console.group();
     console.log('Authorising bot');
