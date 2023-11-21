@@ -26,27 +26,33 @@ class Event extends InteractionTemplate {
     if (!inter.isButton()) return;
     if (inter.customId !== 'participate') return;
 
-    const msgId = inter.message.id;
+    const messageId = inter.message.id;
+    const member = inter.user.id;
 
-    const data = await this.getData(msgId);
+    const data = await this.getData(messageId);
 
     if (!data) throw new Error('Giveaway data does not exist!');
 
-    const { author, content } = data;
+    const { content } = data;
 
-    if (content.giveawayParticipants?.includes(author)) {
-      content.giveawayParticipants.splice(
-        content.giveawayParticipants.indexOf(author)
+    if (content.giveawayParticipants?.includes(member)) {
+      content.giveawayParticipants?.splice(
+        content.giveawayParticipants?.indexOf(member)
       );
-      await interaction.reply({ content: '**You left!**', ephemeral: true });
-      await this.updateData({ author, content });
-      return;
+      await interaction.reply({
+        content: '**You left the giveaway!**',
+        ephemeral: true,
+      });
+      return await this.updateData(messageId, content);
     }
 
-    content.giveawayParticipants!.push(inter.user.id);
+    content.giveawayParticipants?.push(inter.user.id);
 
-    await this.updateData({ author, content });
-    await interaction.reply({ content: '**Done!**', ephemeral: true });
+    await this.updateData(messageId, content);
+    await interaction.reply({
+      content: `**<@${member}>, you were added to the list of participants. \n If you want to leave - just press the button again!**`,
+      ephemeral: true,
+    });
   }
 
   @HandleErrorSecondaryAsync()
@@ -57,9 +63,9 @@ class Event extends InteractionTemplate {
   }
 
   @HandleErrorSecondaryAsync()
-  async updateData(data: DbNote) {
-    if (!data) throw new Error('Data was not provided!');
+  async updateData(msgId: string, content: DbNote['content']) {
+    if (!msgId || !content) throw new Error('Data was not provided!');
 
-    return await this.giveawaysController.updateGiveawayDbNote(data);
+    return await this.giveawaysController.updateGiveawayDbNote(msgId, content);
   }
 }

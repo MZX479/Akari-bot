@@ -107,7 +107,9 @@ class Command extends InteractionTemplate {
       },
     });
 
-    return await this.replyTrue('**Giveaway successfully created!**');
+    const reply = await this.replyTrue('**Giveaway successfully created!**');
+
+    setTimeout(() => reply.delete(), 5000);
   }
 
   @HandleErrorSecondary()

@@ -1,6 +1,5 @@
 import { MessageTemplate } from '@/config/templates/MessageTemplate';
 import { HandleErrorAsync, PrefixMessage } from '@/decorators';
-import { discharge } from '@/tools';
 import {
   EmbedBuilder,
   Message,
@@ -54,7 +53,7 @@ class Command extends MessageTemplate {
       limit: amount,
     });
 
-    const deleted_messages = await (message.channel as TextChannel).bulkDelete(
+    const deletedMessages = await (message.channel as TextChannel).bulkDelete(
       toDelete
     );
 
@@ -68,7 +67,7 @@ class Command extends MessageTemplate {
           })
           .setDescription(
             `> **You successfully deleted \`${
-              deleted_messages.size - 1
+              deletedMessages.size - 1
             }\` messages!**`
           )
           .setTimestamp(new Date()),

@@ -58,14 +58,30 @@ export class MainController extends InteractionTemplate {
   }
 
   @HandleErrorSecondaryAsync()
-  async updateDbNote(data: DbNote) {
-    if (!data) throw new Error('Db data was not provided, [updateDbNote]');
-
-    const { author, content } = data;
+  async updateDbNoteById(author: string, content: DbNote['content']) {
+    if (!author || !content)
+      throw new Error('Db data was not provided, [updateDbNote]');
 
     return await this._collection.updateOne(
       {
         author,
+      },
+      {
+        $set: {
+          content,
+        },
+      }
+    );
+  }
+
+  @HandleErrorSecondaryAsync()
+  async updateDbNoteByMsgId(msgId: string, content: DbNote['content']) {
+    if (!msgId || !content)
+      throw new Error('Db data was not provided, [updateDbNote]');
+
+    return await this._collection.updateOne(
+      {
+        msgId,
       },
       {
         $set: {

@@ -150,7 +150,7 @@ export type bountyType = {
 
 export type DbNote = {
   _id?: ObjectId;
-  author: string;
+  author?: string;
   giveawayTime?: number;
   msgId?: string;
   content: {

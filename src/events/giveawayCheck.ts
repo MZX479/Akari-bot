@@ -99,8 +99,9 @@ class Event {
           embeds: [
             logEmbed
               .setTitle('Giveaway failed!')
+              .setColor(Colors.Red)
               .setDescription(
-                `>>> Giveaway with id \`${msgId}\` failed because no one participated!`
+                `>>> **Giveaway with id \`${msgId}\` failed because no one participated!**`
               )
               .setTimestamp(new Date()),
           ],
@@ -126,7 +127,7 @@ class Event {
               },
               {
                 name: 'Time',
-                value: 'Done',
+                value: `\`Done\``,
               },
               {
                 name: 'Card',
@@ -142,6 +143,10 @@ class Event {
         ],
         components: [],
       });
+
+      await giveawayChannel.send(
+        `Congratulations <@${findWinner}>, you won the \`${content.card}\``
+      );
 
       await giveawaysCollection.updateOne(
         {

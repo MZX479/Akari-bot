@@ -87,7 +87,7 @@ export class BountyController extends MainController {
     if (!data)
       throw new Error('Data was not provided, [updateBountyDbNotel (Bounty)]');
 
-    return await this.updateDbNote(data);
+    return await this.updateDbNoteById(data.author as string, data.content);
   }
 
   async bountyLogCreate(embed: EmbedBuilder) {
