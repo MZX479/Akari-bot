@@ -34,6 +34,15 @@ class Event extends InteractionTemplate {
 
     const { author, content } = data;
 
+    if (content.giveawayParticipants?.includes(author)) {
+      content.giveawayParticipants.splice(
+        content.giveawayParticipants.indexOf(author)
+      );
+      await interaction.reply({ content: '**You left!**', ephemeral: true });
+      await this.updateData({ author, content });
+      return;
+    }
+
     content.giveawayParticipants!.push(inter.user.id);
 
     await this.updateData({ author, content });
