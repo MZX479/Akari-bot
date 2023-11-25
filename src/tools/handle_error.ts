@@ -46,7 +46,7 @@ export function handle_error<T extends object>(
     }
 
   const error_embed = new EmbedBuilder()
-    .setTitle('⚠️ An error occured:')
+    .setTitle('⚠️ An unexpected error occured:')
     .addFields(...result)
     .setColor('#DF1515');
 

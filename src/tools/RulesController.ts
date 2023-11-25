@@ -2,6 +2,7 @@ import {
   CommandInteraction,
   EmbedBuilder,
   Guild,
+  Message,
   TextChannel,
   TextInputBuilder,
 } from 'discord.js';
@@ -41,6 +42,18 @@ export class RulesController extends MainController {
     if (!channel) throw new Error('Rules log channel does not exist!');
 
     return channel;
+  }
+
+  async getMessage(msgId: string): Promise<Message> {
+    if (!msgId) throw new Error('MsgId was not provided!');
+
+    const channel = this.getRulesChannel();
+    if (!channel) throw new Error('Rules channel does not exist!');
+
+    const message = await channel.messages.fetch(msgId);
+    if (!message) throw new Error('Message does not exist!');
+
+    return message;
   }
 
   async rulesSender(embed: EmbedBuilder) {

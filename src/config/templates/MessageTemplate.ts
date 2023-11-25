@@ -175,7 +175,7 @@ export class MessageTemplate {
 
   async unexpected_error() {
     await this.message.reply({
-      content: `При выполнении команды возникла непредвиненная ошибка.\nОбратитесь к <@${config.owner}>`,
+      content: `An unexpected error occured.\nPlease contact <@${config.owner}>`,
     });
   }
 }

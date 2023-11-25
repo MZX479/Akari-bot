@@ -118,13 +118,13 @@ export class GiveawayController extends MainController {
     return await this.createDbNote(data);
   }
 
-  async updateGiveawayDbNote(msgId: string, content: DbNote['content']) {
+  async updateGiveawayDbNote(msgId: string, content: DbNote) {
     if (!msgId || !content)
       throw new Error(
         'Data was not provided, [updateGiveawayDbNotel (Giveaway)]'
       );
 
-    return await this.updateDbNoteByMsgId(msgId, content);
+    return await this.updateDbNoteByMsgId(msgId, content.content);
   }
 
   async giveawayLogCreate(embed: EmbedBuilder) {

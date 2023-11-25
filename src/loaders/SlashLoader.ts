@@ -25,27 +25,25 @@ class SlashBuilder {
   invoke(name: string, interaction: CommandInteraction) {
     try {
       Logger.log(
-        `Получена новая /-комманда ${name} от пользователя ${interaction.user.id} на сервере ${interaction.guild?.id}`
+        `Got a /-command ${name} from user ${interaction.user.id} on server ${interaction.guild?.id}`
       );
       const command_to_invoke = this._commands_list.filter(
         (command) => command.payload.data.name === name
       )[0];
 
       if (!command_to_invoke)
-        return Logger.error(`/-комманда ${name} не найдена`);
+        return Logger.error(`/-command ${name} was not found!`);
 
-      Logger.log(`Найдена /-комманда ${name}`);
-      Logger.log(`Перехожу к вызову комманды`);
+      Logger.log(`Found /-command ${name}`);
+      Logger.log(`Activating the command..`);
       new command_to_invoke.command(interaction);
 
       setTimeout(async () => {
         if (!interaction.replied) {
-          Logger.log(
-            'Ответ на комманду не последовал в первые 4 секунды, потому на нее был поставлен deferReply'
-          );
+          Logger.log('No reply at first 4 seconds so deferReply was set!');
 
           await interaction.deferReply().catch((e) => {
-            Logger.log('При попытке поставить deferReply произошла ошибка');
+            Logger.log('An error occured via trying to set deferReply');
           });
         }
       }, 4000);

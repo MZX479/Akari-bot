@@ -29,14 +29,14 @@ class Command extends InteractionTemplate {
   async execute() {
     const status_embed = new EmbedBuilder()
       .setAuthor({
-        name: `♾️ Статус бота ${client.user?.tag}`,
+        name: `♾️ Bot status ${client.user?.tag}`,
         iconURL: client.user?.displayAvatarURL(),
       })
       .setColor('#732ADC')
       .addFields([
         {
-          name: '❕ Статус',
-          value: 'Похоже, что живой',
+          name: '❕ Status',
+          value: 'Alive',
           inline: true,
         },
         {
@@ -45,12 +45,12 @@ class Command extends InteractionTemplate {
           inline: true,
         },
         {
-          name: '🏓 Пинг',
+          name: '🏓 latency',
           value: discharge(client.ws.ping),
           inline: true,
         },
         {
-          name: '🕰️ Время запуска',
+          name: '🕰️ Started',
           value: time(client.readyAt!, 'D') + ` ` + time(client.readyAt!, 'T'),
           inline: true,
         },
@@ -60,13 +60,13 @@ class Command extends InteractionTemplate {
           inline: true,
         },
         {
-          name: '⏲️ Запущен',
+          name: '⏲️ Started at',
           value: time(client!.readyAt!, 'R'),
           inline: true,
         },
       ])
       .setFooter({
-        text: `Версия: ${process.env.npm_package_version}`,
+        text: `Version: ${process.env.npm_package_version}`,
       });
 
     this.send({
