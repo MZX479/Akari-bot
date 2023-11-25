@@ -41,7 +41,7 @@ class Command extends MessageTemplate {
       return await this.replyFalse('Specified number is wrong!');
     }
 
-    if (amount <= 0 || amount > 100) {
+    if (amount <= 0 || amount >= 100) {
       return await this.replyFalse(
         'Specified messages amount cannot be under 0 or more than 100!'
       );

@@ -43,12 +43,12 @@ class Event extends InteractionTemplate {
         content: '**You left the giveaway!**',
         ephemeral: true,
       });
-      return await this.updateData(messageId, content);
+      return await this.updateData(messageId, data);
     }
 
     content.giveawayParticipants?.push(inter.user.id);
 
-    await this.updateData(messageId, content);
+    await this.updateData(messageId, data);
     await interaction.reply({
       content: `**<@${member}>, you were added to the list of participants. \n If you want to leave - just press the button again!**`,
       ephemeral: true,
@@ -63,7 +63,7 @@ class Event extends InteractionTemplate {
   }
 
   @HandleErrorSecondaryAsync()
-  async updateData(msgId: string, content: DbNote['content']) {
+  async updateData(msgId: string, content: DbNote) {
     if (!msgId || !content) throw new Error('Data was not provided!');
 
     return await this.giveawaysController.updateGiveawayDbNote(msgId, content);
