@@ -93,10 +93,11 @@ class Command extends InteractionTemplate {
 
     const bountyEmbedSender = await this.sendBounty(bountyEmbed);
 
-    const logEmbed = await this.createLog({
+    const logEmbed = this.createLog({
       description,
       reward,
       target,
+      status: 'active',
       msgId: bountyEmbedSender.id,
     });
 
@@ -106,7 +107,12 @@ class Command extends InteractionTemplate {
     await this.createDbNote({
       author: this.author.user.id,
       msgId: bountyEmbedSender.id,
-      content: { description, bounty: target, bountyStatus: 'active' },
+      content: {
+        description,
+        bountyReward: reward,
+        bounty: target,
+        bountyStatus: 'active',
+      },
     });
 
     await modalSubmit.reply({ content: '`Successfully added!`' });
@@ -121,8 +127,8 @@ class Command extends InteractionTemplate {
     return this.bountyController.getBountyEmbed();
   }
 
-  @HandleErrorSecondaryAsync()
-  async createBountyEmbed(data: bountyType): Promise<EmbedBuilder> {
+  @HandleErrorSecondary()
+  createBountyEmbed(data: bountyType): EmbedBuilder {
     if (!data)
       throw new Error(
         'Data was not provided! [createBountyEmbed (createBounty)]'
@@ -130,7 +136,7 @@ class Command extends InteractionTemplate {
 
     const { target, reward, description } = data;
 
-    const embed = this.getEmbed()
+    return this.getEmbed()
       .setColor(Colors.Yellow)
       .setAuthor({
         name: this.author.user.username,
@@ -155,7 +161,7 @@ class Command extends InteractionTemplate {
         },
         {
           name: 'Status:',
-          value: `\`Active!\``,
+          value: `\`active\``,
         },
         {
           name: 'Description:',
@@ -163,8 +169,6 @@ class Command extends InteractionTemplate {
         }
       )
       .setTimestamp(new Date());
-
-    return embed;
   }
 
   @HandleErrorSecondaryAsync()
@@ -175,13 +179,13 @@ class Command extends InteractionTemplate {
     return await this.bountyController.bountySender(embed);
   }
 
-  async createLog(data: bountyLogType): Promise<EmbedBuilder> {
+  createLog(data: bountyLogType): EmbedBuilder {
     if (!data)
       throw new Error('Data was not provided! [createLog (createBounty)]');
 
-    const { target, reward, msgId, description } = data;
+    const { target, reward, msgId, description, status } = data;
 
-    const embed = this.getEmbed()
+    return this.getEmbed()
       .setAuthor({
         name: this.author.user.username,
         iconURL: this.author.displayAvatarURL(),
@@ -206,7 +210,7 @@ class Command extends InteractionTemplate {
         },
         {
           name: 'Status:',
-          value: `\`Active!\``,
+          value: `\`${status}\``,
         },
         {
           name: 'Description:',
@@ -218,8 +222,6 @@ class Command extends InteractionTemplate {
         }
       )
       .setTimestamp(new Date());
-
-    return embed;
   }
 
   @HandleErrorSecondaryAsync()

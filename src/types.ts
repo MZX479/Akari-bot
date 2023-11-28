@@ -158,7 +158,8 @@ export type DbNote = {
     winner?: string;
     card?: string;
     bounty?: string;
-    bountyStatus?: 'active' | 'done' | 'canceled';
+    bountyReward?: string;
+    bountyStatus?: 'active' | 'done' | 'canceled' | 'deleted';
     giveawayStatus?: 'active' | 'done';
     giveawayParticipants?: Array<string>;
     description: string;
@@ -169,6 +170,7 @@ export type bountyLogType = {
   target: string;
   reward: string;
   description: string;
+  status: 'active' | 'done' | 'canceled' | 'deleted';
   msgId: string;
 };
 

@@ -12,6 +12,9 @@ import {
     name: 'clear',
   },
   type: 'Utility',
+  permissions: {
+    allowed_roles: ['1162139543781265498', '1163749369229615175'],
+  },
 })
 class Command extends MessageTemplate {
   private readonly max_amount: 100 = 100;

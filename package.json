@@ -2,7 +2,7 @@
   "name": "clean-slash-handler",
   "owners": "mzx479, loli_knight",
   "originally-created-by": "loli_knight",
-  "version": "1.5",
+  "version": "1.6",
   "description": "Custom slash handler for discord bots",
   "main": "dist/Main.js",
   "devDependencies": {

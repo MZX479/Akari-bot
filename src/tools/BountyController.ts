@@ -19,7 +19,7 @@ export class BountyController extends MainController {
     return new EmbedBuilder();
   }
 
-  private getBountyChannel(): TextChannel {
+  getBountyChannel(): TextChannel {
     const channelId = process.env.BOUNTY_CHANNEL_ID;
     if (!channelId) throw new Error('Bounty channel id does not exist!');
 
@@ -76,6 +76,12 @@ export class BountyController extends MainController {
     return await message.delete();
   }
 
+  async getBountyDbNote(msgId: string) {
+    if (!msgId) throw new Error('MsgId was not provided!');
+
+    return await this.getDbNote({ msgId });
+  }
+
   async createBountyDbNote(data: DbNote) {
     if (!data)
       throw new Error('Data was not provided, [createBountyDbNotel (Bounty)]');
@@ -87,7 +93,7 @@ export class BountyController extends MainController {
     if (!data)
       throw new Error('Data was not provided, [updateBountyDbNotel (Bounty)]');
 
-    return await this.updateDbNoteById(data.author as string, data.content);
+    return await this.updateDbNoteByMsgId(data.msgId as string, data.content);
   }
 
   async bountyLogCreate(embed: EmbedBuilder) {
