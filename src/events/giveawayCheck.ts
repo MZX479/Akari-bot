@@ -145,7 +145,7 @@ class Event {
       });
 
       await giveawayChannel.send(
-        `Congratulations <@${findWinner}>, you won the \`${content.card}\``
+        `**Congratulations <@${findWinner}>, you won \`${content.card}\`!**`
       );
 
       await giveawaysCollection.updateOne(
