@@ -136,7 +136,7 @@ export class MainController extends InteractionTemplate {
     if (!data) throw new Error('Data was not provided!');
 
     const modal = new ModalBuilder()
-      .setCustomId('descriptionsModal')
+      .setCustomId('descriptionModal')
       .setTitle('Describe if it needs to.');
 
     const inputField = data;

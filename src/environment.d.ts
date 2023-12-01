@@ -16,6 +16,7 @@ declare global {
       GIVEAWAY_ROLE_ID?: string;
       BOUNTY_CHANNEL_ID?: string;
       BOUNTY_LOGS_CHANNEL_ID?: string;
+      BUGS_CHANNEL_ID?: string;
       DEV?: string;
     }
   }
