@@ -185,6 +185,7 @@ class Event extends GiveawayController {
     return this.getGiveawayEmbed();
   }
 
+  @HandleErrorSecondaryAsync()
   async updateDbNote(data: DbNote) {
     if (!data) throw new Error('Data was not provided!');
 

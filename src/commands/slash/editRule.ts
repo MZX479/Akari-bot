@@ -1,6 +1,7 @@
 import { rulesLogType, rulesType } from '#types';
 import { InteractionTemplate } from '@/config/templates';
 import {
+  HandleErrorAsync,
   HandleErrorSecondary,
   HandleErrorSecondaryAsync,
   Slash,
@@ -54,6 +55,7 @@ class Command extends InteractionTemplate {
     this.execute();
   }
 
+  @HandleErrorAsync()
   private async execute() {
     const title = this.get_argument('title').value as string;
     const msgId = this.get_argument('message-id').value as string;

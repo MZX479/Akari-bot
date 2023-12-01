@@ -23,10 +23,12 @@ export class GiveawayController {
     this._collection = this._db.collection('Giveaways');
   }
 
+  @HandleErrorSecondary()
   getGiveawayEmbed(): EmbedBuilder {
     return new EmbedBuilder();
   }
 
+  @HandleErrorSecondary()
   getButton(): ButtonBuilder {
     return new ButtonBuilder()
       .setLabel('Participate')
@@ -34,6 +36,7 @@ export class GiveawayController {
       .setCustomId('participate');
   }
 
+  @HandleErrorSecondary()
   getGiveawayChannel(): TextChannel {
     const channelId = process.env.GIVEAWAY_CHANNEL_ID;
     if (!channelId) throw new Error('Giveaway channel id does not exist!');
@@ -44,6 +47,7 @@ export class GiveawayController {
     return channel;
   }
 
+  @HandleErrorSecondary()
   getGiveawayLogChannel(): TextChannel {
     const channelId = process.env.GIVEAWAY_LOGS_CHANNEL_ID;
     if (!channelId) throw new Error('Giveaway log channel id does not exist!');
@@ -54,6 +58,7 @@ export class GiveawayController {
     return channel;
   }
 
+  @HandleErrorSecondary()
   getGiveawayRoleId(): string {
     const id = process.env.GIVEAWAY_ROLE_ID;
     if (!id) throw new Error('GIVEAWAY_ROLE_ID does not exist!');
@@ -61,6 +66,7 @@ export class GiveawayController {
     return id;
   }
 
+  @HandleErrorSecondaryAsync()
   async giveawayEditEmbed(msgId: string, embed: EmbedBuilder, components?: []) {
     if (!msgId || !embed) throw new Error('MsgId or embed were not provided!');
 
@@ -75,6 +81,7 @@ export class GiveawayController {
     return await message.edit({ embeds: [embed], components });
   }
 
+  @HandleErrorSecondaryAsync()
   async giveawayCreate(embed: EmbedBuilder, button: ButtonBuilder) {
     if (!embed || !button)
       throw new Error('Embed or button were not provided!');
@@ -94,6 +101,7 @@ export class GiveawayController {
     });
   }
 
+  @HandleErrorSecondaryAsync()
   async giveawayRemover(messageId: string) {
     if (!messageId) throw new Error('Message id was not provided!');
 
@@ -107,6 +115,7 @@ export class GiveawayController {
     return await message.delete();
   }
 
+  @HandleErrorSecondaryAsync()
   async getGiveawayDbNote(msgId: string) {
     if (!msgId)
       throw new Error('msgId was not provided! [getGiveawayDbNote (Giveaway)]');
@@ -114,6 +123,7 @@ export class GiveawayController {
     return await this._collection.findOne<DbNote>({ msgId });
   }
 
+  @HandleErrorSecondaryAsync()
   async createGiveawayDbNote(data: DbNote) {
     if (!data)
       throw new Error(
@@ -123,6 +133,7 @@ export class GiveawayController {
     return await this._collection.insertOne(data);
   }
 
+  @HandleErrorSecondaryAsync()
   async updateGiveawayDbNote(data: DbNote) {
     if (!data)
       throw new Error(
@@ -143,6 +154,7 @@ export class GiveawayController {
     );
   }
 
+  @HandleErrorSecondaryAsync()
   async embedUpdater(embed: EmbedBuilder, channel: TextChannel, msgId: string) {
     if (!embed || !channel || !msgId)
       throw new Error('One of arguments were not provided!');
@@ -153,6 +165,7 @@ export class GiveawayController {
     return await message.edit({ embeds: [embed] });
   }
 
+  @HandleErrorSecondaryAsync()
   async embedSender(embed: EmbedBuilder, channel: TextChannel) {
     if (!embed || !channel)
       throw new Error('Embed or channel was not provided!');
@@ -160,6 +173,7 @@ export class GiveawayController {
     return await channel.send({ embeds: [embed] });
   }
 
+  @HandleErrorSecondaryAsync()
   async giveawayLogCreate(embed: EmbedBuilder) {
     if (!embed) throw new Error('Embed was not provided! [giveawayLogCreate]');
 
@@ -172,6 +186,7 @@ export class GiveawayController {
     return await this.embedSender(embed, channel);
   }
 
+  @HandleErrorSecondaryAsync()
   async giveawayLogUpdate(embed: EmbedBuilder, logId: string) {
     if (!embed || !logId)
       throw new Error('Embed or logId were not provided! [giveawayLogUpdate]');

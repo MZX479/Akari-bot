@@ -8,6 +8,7 @@ import {
 } from 'discord.js';
 import { MainController } from './MainController';
 import { DbNote } from '#types';
+import { HandleErrorSecondary, HandleErrorSecondaryAsync } from '@/decorators';
 
 export class RulesController extends MainController {
   interaction: CommandInteraction;
@@ -16,10 +17,12 @@ export class RulesController extends MainController {
     this.interaction = interaction;
   }
 
+  @HandleErrorSecondary()
   getEmbed(): EmbedBuilder {
     return new EmbedBuilder();
   }
 
+  @HandleErrorSecondary()
   getRulesChannel(): TextChannel {
     const channelId = process.env.RULES_CHANNEL_ID;
     if (!channelId) throw new Error('Rules channel id does not exist!');
@@ -32,6 +35,7 @@ export class RulesController extends MainController {
     return channel;
   }
 
+  @HandleErrorSecondary()
   getRulesLogChannel(): TextChannel {
     const channelId = process.env.RULES_LOGS_CHANNEL_ID;
     if (!channelId) throw new Error('Rules log channel id does not exist!');
@@ -44,6 +48,7 @@ export class RulesController extends MainController {
     return channel;
   }
 
+  @HandleErrorSecondaryAsync()
   async getMessage(msgId: string): Promise<Message> {
     if (!msgId) throw new Error('MsgId was not provided!');
 
@@ -56,6 +61,7 @@ export class RulesController extends MainController {
     return message;
   }
 
+  @HandleErrorSecondaryAsync()
   async rulesSender(embed: EmbedBuilder) {
     if (!embed) throw new Error('Embed was not provided!');
 
@@ -66,6 +72,7 @@ export class RulesController extends MainController {
     return await this.embedSender(embed, channel);
   }
 
+  @HandleErrorSecondaryAsync()
   async rulesEditor(embed: EmbedBuilder, messageId: string) {
     if (!embed || !messageId) throw new Error('Embed was not provided!');
 
@@ -76,6 +83,7 @@ export class RulesController extends MainController {
     return await this.embedUpdate(embed, channel, messageId);
   }
 
+  @HandleErrorSecondaryAsync()
   async rulesRemover(messageId: string) {
     if (!messageId) throw new Error('Message id was not provided!');
 
@@ -89,6 +97,7 @@ export class RulesController extends MainController {
     return await message.delete();
   }
 
+  @HandleErrorSecondaryAsync()
   async rulesLogCreate(embed: EmbedBuilder) {
     if (!embed) throw new Error('Embed was not provided! [rulesLogCreate]');
 
@@ -101,6 +110,7 @@ export class RulesController extends MainController {
     return await this.embedSender(embed, channel);
   }
 
+  @HandleErrorSecondaryAsync()
   async rulesLogUpdate(embed: EmbedBuilder, logId: string) {
     if (!embed || !logId)
       throw new Error('Embed or logId were not provided! [rulesLogUpdate]');
@@ -114,6 +124,7 @@ export class RulesController extends MainController {
     return await this.embedUpdate(embed, channel, logId);
   }
 
+  @HandleErrorSecondaryAsync()
   async getModal(data: TextInputBuilder) {
     if (!data) throw new Error('Data was not provided, [getModal (Rules)]');
 

@@ -7,6 +7,7 @@ import {
 } from 'discord.js';
 import { MainController } from './MainController';
 import { DbNote } from '#types';
+import { HandleErrorSecondary, HandleErrorSecondaryAsync } from '@/decorators';
 
 export class BountyController extends MainController {
   interaction: CommandInteraction;
@@ -15,10 +16,12 @@ export class BountyController extends MainController {
     this.interaction = interaction;
   }
 
+  @HandleErrorSecondary()
   getBountyEmbed(): EmbedBuilder {
     return new EmbedBuilder();
   }
 
+  @HandleErrorSecondary()
   getBountyChannel(): TextChannel {
     const channelId = process.env.BOUNTY_CHANNEL_ID;
     if (!channelId) throw new Error('Bounty channel id does not exist!');
@@ -31,6 +34,7 @@ export class BountyController extends MainController {
     return channel;
   }
 
+  @HandleErrorSecondary()
   private getBountyLogChannel(): TextChannel {
     const channelId = process.env.BOUNTY_LOGS_CHANNEL_ID;
     if (!channelId) throw new Error('Bounty log channel id does not exist!');
@@ -43,6 +47,7 @@ export class BountyController extends MainController {
     return channel;
   }
 
+  @HandleErrorSecondaryAsync()
   async bountySender(embed: EmbedBuilder) {
     if (!embed) throw new Error('Embed was not provided!');
 
@@ -53,6 +58,7 @@ export class BountyController extends MainController {
     return await this.embedSender(embed, channel);
   }
 
+  @HandleErrorSecondaryAsync()
   async bountyEditor(embed: EmbedBuilder, messageId: string) {
     if (!embed || !messageId) throw new Error('Embed was not provided!');
 
@@ -63,6 +69,7 @@ export class BountyController extends MainController {
     return await this.embedUpdate(embed, channel, messageId);
   }
 
+  @HandleErrorSecondaryAsync()
   async bountyRemover(messageId: string) {
     if (!messageId) throw new Error('Message id was not provided!');
 
@@ -76,12 +83,14 @@ export class BountyController extends MainController {
     return await message.delete();
   }
 
+  @HandleErrorSecondaryAsync()
   async getBountyDbNote(msgId: string) {
     if (!msgId) throw new Error('MsgId was not provided!');
 
     return await this.getDbNote({ msgId });
   }
 
+  @HandleErrorSecondaryAsync()
   async createBountyDbNote(data: DbNote) {
     if (!data)
       throw new Error('Data was not provided, [createBountyDbNotel (Bounty)]');
@@ -89,6 +98,7 @@ export class BountyController extends MainController {
     return await this.createDbNote(data);
   }
 
+  @HandleErrorSecondaryAsync()
   async updateBountyDbNote(data: DbNote) {
     if (!data)
       throw new Error('Data was not provided, [updateBountyDbNotel (Bounty)]');
@@ -96,6 +106,7 @@ export class BountyController extends MainController {
     return await this.updateDbNoteByMsgId(data.msgId as string, data.content);
   }
 
+  @HandleErrorSecondaryAsync()
   async bountyLogCreate(embed: EmbedBuilder) {
     if (!embed) throw new Error('Embed was not provided! [bountyLogCreate]');
 
@@ -108,6 +119,7 @@ export class BountyController extends MainController {
     return await this.embedSender(embed, channel);
   }
 
+  @HandleErrorSecondaryAsync()
   async bountyLogUpdate(embed: EmbedBuilder, logId: string) {
     if (!embed || !logId)
       throw new Error('Embed or logId were not provided! [bountyLogUpdate]');
@@ -121,6 +133,7 @@ export class BountyController extends MainController {
     return await this.embedUpdate(embed, channel, logId);
   }
 
+  @HandleErrorSecondaryAsync()
   async getModal(data: TextInputBuilder) {
     if (!data) throw new Error('Data was not provided, [getModal (Bounty)]');
 

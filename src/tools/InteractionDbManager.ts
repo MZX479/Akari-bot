@@ -1,4 +1,5 @@
 import { MongoClient } from '@/Main';
+import { HandleErrorSecondary } from '@/decorators';
 import { Db } from 'mongodb';
 
 export class InteractionDbManager {
@@ -7,6 +8,7 @@ export class InteractionDbManager {
     this.db = MongoClient.db(guild_id);
   }
 
+  @HandleErrorSecondary()
   collection(collection_name: string) {
     return this.db.collection(collection_name);
   }

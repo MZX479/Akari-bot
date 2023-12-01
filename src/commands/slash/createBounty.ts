@@ -179,6 +179,7 @@ class Command extends InteractionTemplate {
     return await this.bountyController.bountySender(embed);
   }
 
+  @HandleErrorSecondary()
   createLog(data: bountyLogType): EmbedBuilder {
     if (!data)
       throw new Error('Data was not provided! [createLog (createBounty)]');
