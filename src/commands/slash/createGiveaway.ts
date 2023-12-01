@@ -57,10 +57,7 @@ class Command extends InteractionTemplate {
     super(interaction);
     this.interaction = interaction;
     this.author = interaction.member as GuildMember;
-    this.giveawaysController = new GiveawayController(
-      interaction,
-      interaction.guild!
-    );
+    this.giveawaysController = new GiveawayController(interaction.guild!);
     this.execute();
   }
 

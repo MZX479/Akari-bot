@@ -13,10 +13,7 @@ class Event extends InteractionTemplate {
   giveawaysController: GiveawayController;
   constructor(interaction: CommandInteraction) {
     super(interaction);
-    this.giveawaysController = new GiveawayController(
-      interaction,
-      interaction.guild!
-    );
+    this.giveawaysController = new GiveawayController(interaction.guild!);
     this.execute(interaction);
   }
 
@@ -43,12 +40,12 @@ class Event extends InteractionTemplate {
         content: '**You left the giveaway!**',
         ephemeral: true,
       });
-      return await this.updateData(messageId, data);
+      return await this.updateData(data);
     }
 
     content.giveawayParticipants?.push(inter.user.id);
 
-    await this.updateData(messageId, data);
+    await this.updateData(data);
     await interaction.reply({
       content: `**<@${member}>, you were added to the list of participants. \n If you want to leave - just press the button again!**`,
       ephemeral: true,
@@ -63,9 +60,9 @@ class Event extends InteractionTemplate {
   }
 
   @HandleErrorSecondaryAsync()
-  async updateData(msgId: string, content: DbNote) {
-    if (!msgId || !content) throw new Error('Data was not provided!');
+  async updateData(data: DbNote) {
+    if (!data) throw new Error('Data was not provided!');
 
-    return await this.giveawaysController.updateGiveawayDbNote(msgId, content);
+    return await this.giveawaysController.updateGiveawayDbNote(data);
   }
 }

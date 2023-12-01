@@ -2,20 +2,25 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  CommandInteraction,
   EmbedBuilder,
   Guild,
+  ModalBuilder,
   TextChannel,
   TextInputBuilder,
 } from 'discord.js';
-import { MainController } from './MainController';
 import { DbNote } from '#types';
+import { Db, Collection } from 'mongodb';
+import { MongoClient } from '@/Main';
+import { HandleErrorSecondary, HandleErrorSecondaryAsync } from '@/decorators';
 
-export class GiveawayController extends MainController {
-  interaction: CommandInteraction;
-  constructor(interaction: CommandInteraction, guild: Guild) {
-    super(interaction, guild, process.env.GIVEAWAY_COLLECTION_NAME);
-    this.interaction = interaction;
+export class GiveawayController {
+  private _db: Db;
+  private _collection: Collection;
+  private guild: Guild;
+  constructor(guild: Guild) {
+    this.guild = guild;
+    this._db = MongoClient.db(guild.id);
+    this._collection = this._db.collection('Giveaways');
   }
 
   getGiveawayEmbed(): EmbedBuilder {
@@ -33,9 +38,7 @@ export class GiveawayController extends MainController {
     const channelId = process.env.GIVEAWAY_CHANNEL_ID;
     if (!channelId) throw new Error('Giveaway channel id does not exist!');
 
-    const channel = this.interaction.guild!.channels.cache.get(
-      channelId
-    ) as TextChannel;
+    const channel = this.guild!.channels.cache.get(channelId) as TextChannel;
     if (!channel) throw new Error('Giveaway channel does not exist!');
 
     return channel;
@@ -45,9 +48,7 @@ export class GiveawayController extends MainController {
     const channelId = process.env.GIVEAWAY_LOGS_CHANNEL_ID;
     if (!channelId) throw new Error('Giveaway log channel id does not exist!');
 
-    const channel = this.interaction.guild!.channels.cache.get(
-      channelId
-    ) as TextChannel;
+    const channel = this.guild!.channels.cache.get(channelId) as TextChannel;
     if (!channel) throw new Error('Giveaway log channel does not exist!');
 
     return channel;
@@ -58,6 +59,20 @@ export class GiveawayController extends MainController {
     if (!id) throw new Error('GIVEAWAY_ROLE_ID does not exist!');
 
     return id;
+  }
+
+  async giveawayEditEmbed(msgId: string, embed: EmbedBuilder, components?: []) {
+    if (!msgId || !embed) throw new Error('MsgId or embed were not provided!');
+
+    const channel = this.getGiveawayChannel();
+    if (!channel)
+      throw new Error('Something went wrong. Giveaway Channel does not exist!');
+
+    const message = await channel.messages.fetch(msgId);
+    if (!message)
+      throw new Error('Something went wrong. Message does not exist!');
+
+    return await message.edit({ embeds: [embed], components });
   }
 
   async giveawayCreate(embed: EmbedBuilder, button: ButtonBuilder) {
@@ -79,16 +94,6 @@ export class GiveawayController extends MainController {
     });
   }
 
-  async giveawayEditor(embed: EmbedBuilder, messageId: string) {
-    if (!embed || !messageId) throw new Error('Embed was not provided!');
-
-    const channel = this.getGiveawayChannel();
-    if (!channel)
-      throw new Error('Something went wrong. Giveaway channel does not exist!');
-
-    return await this.embedUpdate(embed, channel, messageId);
-  }
-
   async giveawayRemover(messageId: string) {
     if (!messageId) throw new Error('Message id was not provided!');
 
@@ -106,7 +111,7 @@ export class GiveawayController extends MainController {
     if (!msgId)
       throw new Error('msgId was not provided! [getGiveawayDbNote (Giveaway)]');
 
-    return await this.getDbNote({ msgId });
+    return await this._collection.findOne<DbNote>({ msgId });
   }
 
   async createGiveawayDbNote(data: DbNote) {
@@ -115,16 +120,44 @@ export class GiveawayController extends MainController {
         'Data was not provided, [createGiveawayDbNotel (Giveaway)]'
       );
 
-    return await this.createDbNote(data);
+    return await this._collection.insertOne(data);
   }
 
-  async updateGiveawayDbNote(msgId: string, content: DbNote) {
-    if (!msgId || !content)
+  async updateGiveawayDbNote(data: DbNote) {
+    if (!data)
       throw new Error(
         'Data was not provided, [updateGiveawayDbNotel (Giveaway)]'
       );
 
-    return await this.updateDbNoteByMsgId(msgId, content.content);
+    const { msgId, content } = data;
+
+    return await this._collection.updateOne(
+      {
+        msgId,
+      },
+      {
+        $set: {
+          content,
+        },
+      }
+    );
+  }
+
+  async embedUpdater(embed: EmbedBuilder, channel: TextChannel, msgId: string) {
+    if (!embed || !channel || !msgId)
+      throw new Error('One of arguments were not provided!');
+
+    const message = await channel.messages.fetch(msgId);
+    if (!message) throw new Error('Message does not exist!');
+
+    return await message.edit({ embeds: [embed] });
+  }
+
+  async embedSender(embed: EmbedBuilder, channel: TextChannel) {
+    if (!embed || !channel)
+      throw new Error('Embed or channel was not provided!');
+
+    return await channel.send({ embeds: [embed] });
   }
 
   async giveawayLogCreate(embed: EmbedBuilder) {
@@ -149,12 +182,25 @@ export class GiveawayController extends MainController {
         'Something went wrong. Giveaway log channel does not exist!'
       );
 
-    return await this.embedUpdate(embed, channel, logId);
+    return await this.embedUpdater(embed, channel, logId);
   }
 
-  async getModal(data: TextInputBuilder) {
-    if (!data) throw new Error('Data was not provided, [getModal (Giveaway)]');
+  @HandleErrorSecondary()
+  modalCreate(data: TextInputBuilder): ModalBuilder {
+    if (!data) throw new Error('Data was not provided!');
 
-    return await this.modalCreate(data);
+    const modal = new ModalBuilder()
+      .setCustomId('description-modal')
+      .setTitle('Describe if it needs to.');
+
+    const inputField = data;
+
+    const row = new ActionRowBuilder<TextInputBuilder>().addComponents(
+      inputField
+    );
+
+    modal.addComponents(row);
+
+    return modal;
   }
 }

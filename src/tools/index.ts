@@ -10,3 +10,4 @@ export * from './CheckValue';
 export * from './Percentage';
 export * from './RoleColors';
 export * from './BountyController';
+export * from './GiveawayController';

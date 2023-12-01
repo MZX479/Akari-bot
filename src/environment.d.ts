@@ -5,6 +5,7 @@ declare global {
       TOKEN?: string;
       GLOBAL?: string;
       DB_CONNECTION_LINK?: string;
+      SERVER_ID: string;
       BOUNTY_COLLECTION_NAME: string;
       GIVEAWAY_COLLECTION_NAME: string;
       RULES_COLLECTION_NAME: string;

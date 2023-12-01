@@ -7,11 +7,14 @@ import {
   HandleErrorSecondaryAsync,
   Ready,
 } from '@/decorators';
-import { Colors, EmbedBuilder, Guild, TextChannel } from 'discord.js';
+import { GiveawayController } from '@/tools';
+import { Colors, EmbedBuilder, Guild, Message, TextChannel } from 'discord.js';
 
 @Ready()
-class Event {
+class Event extends GiveawayController {
   constructor() {
+    const guild = client.guilds.cache.get(config.guild_id) as Guild;
+    super(guild);
     this.execute();
   }
 
@@ -35,13 +38,8 @@ class Event {
       })
       .toArray();
 
-    const guild = client.guilds.cache.get(config.guild_id);
-    if (!guild)
-      throw new Error('Guild not found! [_checkGiveaway (giveawayCheck)]');
-
-    const giveawayChannel = await this.getGiveawayChannel(guild);
-    const giveawayLogChannel = await this.getGiveawayLogChannel(guild);
-    const embed = this.getEmbed();
+    const giveawayChannel = this.getGiveawayChannel();
+    const giveawayEmbed = this.getEmbed();
     const logEmbed = this.getEmbed();
 
     for (let giveaway of giveaways) {
@@ -52,177 +50,145 @@ class Event {
 
       const participants = giveaway.content.giveawayParticipants;
       if (!participants || !participants[0]) {
-        await message.edit({
-          embeds: [
-            embed
-              .setTitle('Giveaway failed!')
-              .setColor(Colors.Red)
-              .addFields(
-                {
-                  name: 'Sponsor',
-                  value: `<@${content.sponsor}>`,
-                },
-                {
-                  name: 'Time',
-                  value: 'Done',
-                },
-                {
-                  name: 'Card',
-                  value: `\`${content.card}\``,
-                },
-                {
-                  name: 'Description',
-                  value: `>>> **Giveaway failed.**\n **Reason: No one participated**`,
-                }
-              )
-              .setFooter({ text: ':c' })
-              .setTimestamp(new Date()),
-          ],
-          components: [],
-        });
-
-        await giveawaysCollection.updateOne(
-          {
-            msgId,
-          },
-          {
-            $set: {
-              content: {
-                giveawayStatus: 'done',
-                description: 'Giveaway failed.',
-              },
+        giveawayEmbed
+          .setTitle('Giveaway failed!')
+          .setColor(Colors.Red)
+          .addFields(
+            {
+              name: 'Sponsor',
+              value: `<@${content.sponsor}>`,
             },
-          }
-        );
-
-        await giveawayLogChannel.send({
-          embeds: [
-            logEmbed
-              .setTitle('Giveaway failed!')
-              .setColor(Colors.Red)
-              .setDescription(
-                `>>> **Giveaway with id \`${msgId}\` failed because no one participated!**`
-              )
-              .setTimestamp(new Date()),
-          ],
+            {
+              name: 'Time',
+              value: 'Done',
+            },
+            {
+              name: 'Card',
+              value: `\`${content.card}\``,
+            },
+            {
+              name: 'Description',
+              value: `>>> **Giveaway failed.**\n **Reason: No one participated**`,
+            }
+          )
+          .setFooter({ text: ':c' })
+          .setTimestamp(new Date());
+        await this.editMessage(message, giveawayEmbed, []);
+        await this.updateDbNote({
+          msgId,
+          content: {
+            description: 'Giveaway failed, no one participated!',
+            card: content.card,
+            giveawayStatus: 'done',
+            sponsor: content.sponsor,
+          },
         });
-
-        giveawayChannel.send;
+        logEmbed
+          .setTitle('Giveaway failed!')
+          .setColor(Colors.Red)
+          .setDescription(
+            `>>> **Giveaway with id \`${msgId}\` failed because no one participated!**`
+          )
+          .setTimestamp(new Date());
+        await this.sendGiveawayLog(logEmbed);
 
         continue;
       }
 
       const findWinner =
         participants[Math.floor(Math.random() * participants.length)];
+      giveawayEmbed
+        .setTitle('Giveaway ended!')
+        .setColor(Colors.Green)
+        .addFields(
+          {
+            name: 'Sponsor',
+            value: `<@${content.sponsor}>`,
+          },
+          {
+            name: 'Time',
+            value: `\`Done\``,
+          },
+          {
+            name: 'Card',
+            value: `\`${content.card}\``,
+          },
+          {
+            name: 'Description',
+            value: `>>> **Giveaway ended.**\n **Winner: <@${findWinner}>**`,
+          }
+        )
+        .setFooter({ text: 'Congratulations!' })
+        .setTimestamp(new Date());
 
-      await message.edit({
-        embeds: [
-          embed
-            .setTitle('Giveaway ended!')
-            .setColor(Colors.Green)
-            .addFields(
-              {
-                name: 'Sponsor',
-                value: `<@${content.sponsor}>`,
-              },
-              {
-                name: 'Time',
-                value: `\`Done\``,
-              },
-              {
-                name: 'Card',
-                value: `\`${content.card}\``,
-              },
-              {
-                name: 'Description',
-                value: `>>> **Giveaway ended.**\n **Winner: <@${findWinner}>**`,
-              }
-            )
-            .setFooter({ text: 'Congratulations!' })
-            .setTimestamp(new Date()),
-        ],
-        components: [],
-      });
-
+      await this.editMessage(message, giveawayEmbed, []);
       await giveawayChannel.send(
         `**Congratulations <@${findWinner}>, you won \`${content.card}\`!**`
       );
-
-      await giveawaysCollection.updateOne(
-        {
-          msgId,
+      await this.updateDbNote({
+        msgId,
+        content: {
+          giveawayStatus: 'done',
+          card: content.card,
+          winner: findWinner,
+          sponsor: content.sponsor,
+          description: `Giveaway done. Winner: ${findWinner}`,
         },
-        {
-          $set: {
-            content: {
-              giveawayStatus: 'done',
-              card: content.card,
-              winner: findWinner,
-              sponsor: content.sponsor,
-              description: `Giveaway done. Winner: ${findWinner}`,
-            },
-          },
-        }
-      );
-
-      await giveawayLogChannel.send({
-        embeds: [
-          logEmbed
-            .setTitle('Giveaway ended!')
-            .setColor(Colors.Green)
-            .addFields(
-              {
-                name: 'Sponsor',
-                value: `<@${content.sponsor}>`,
-              },
-              {
-                name: 'Time',
-                value: 'Done',
-              },
-              {
-                name: 'Card',
-                value: `\`${content.card}\``,
-              },
-              {
-                name: 'Description',
-                value: `**Giveaway ended.**\n **Winner: <@${findWinner}>**`,
-              },
-              {
-                name: 'Msg Id',
-                value: `\`${msgId}\``,
-              }
-            )
-            .setFooter({ text: 'Congratulations!' })
-            .setTimestamp(new Date()),
-        ],
       });
+
+      logEmbed
+        .setTitle('Giveaway ended!')
+        .setColor(Colors.Green)
+        .addFields(
+          {
+            name: 'Sponsor',
+            value: `<@${content.sponsor}>`,
+          },
+          {
+            name: 'Time',
+            value: 'Done',
+          },
+          {
+            name: 'Card',
+            value: `\`${content.card}\``,
+          },
+          {
+            name: 'Description',
+            value: `**Giveaway ended.**\n **Winner: <@${findWinner}>**`,
+          },
+          {
+            name: 'Msg Id',
+            value: `\`${msgId}\``,
+          }
+        )
+        .setFooter({ text: 'Congratulations!' })
+        .setTimestamp(new Date());
+
+      await this.sendGiveawayLog(logEmbed);
     }
   }
 
   @HandleErrorSecondaryAsync()
-  async getGiveawayChannel(guild: Guild): Promise<TextChannel> {
-    const giveawayChannelId = process.env.GIVEAWAY_CHANNEL_ID;
+  async sendGiveawayLog(embed: EmbedBuilder) {
+    if (!embed) throw new Error('Data was not provided!');
 
-    if (!giveawayChannelId)
-      throw new Error(
-        'GIVEAWAY_CHANNEL_ID does not exist, [getGiveawayChannel (giveawayCheck)]'
-      );
+    return await this.giveawayLogCreate(embed);
+  }
 
-    const giveawayChannel = guild.channels.cache.get(
-      giveawayChannelId
-    ) as TextChannel;
-
-    if (!giveawayChannel)
-      throw new Error(
-        'giveawayChannel does not exist! [getGiveawayChannel (giveawayCheck)]'
-      );
-
-    return giveawayChannel;
+  @HandleErrorSecondary()
+  giveawayChannel(): TextChannel {
+    return this.getGiveawayChannel();
   }
 
   @HandleErrorSecondary()
   getEmbed(): EmbedBuilder {
-    return new EmbedBuilder();
+    return this.getGiveawayEmbed();
+  }
+
+  async updateDbNote(data: DbNote) {
+    if (!data) throw new Error('Data was not provided!');
+
+    return await this.updateGiveawayDbNote(data);
   }
 
   @HandleErrorSecondaryAsync()
@@ -231,23 +197,10 @@ class Event {
   }
 
   @HandleErrorSecondaryAsync()
-  async getGiveawayLogChannel(guild: Guild): Promise<TextChannel> {
-    const giveawayLogChannelId = process.env.GIVEAWAY_LOGS_CHANNEL_ID;
+  async editMessage(message: Message, embed: EmbedBuilder, components: []) {
+    if (!message || !embed || !components)
+      throw new Error('One or more arguments were not provided!');
 
-    if (!giveawayLogChannelId)
-      throw new Error(
-        'GIVEAWAY_CHANNEL_ID does not exist, [getGiveawayChannel (giveawayCheck)]'
-      );
-
-    const giveawayLogChannel = guild.channels.cache.get(
-      giveawayLogChannelId
-    ) as TextChannel;
-
-    if (!giveawayLogChannel)
-      throw new Error(
-        'giveawayChannel does not exist! [getGiveawayChannel (giveawayCheck)]'
-      );
-
-    return giveawayLogChannel;
+    return await message.edit({ embeds: [embed], components });
   }
 }
