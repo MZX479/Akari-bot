@@ -5,6 +5,7 @@ import {
   HandleErrorSecondaryAsync,
   Slash,
 } from '@/decorators';
+import { colors } from '@/tools';
 
 import {
   ColorResolvable,
@@ -23,52 +24,7 @@ import {
       new SlashCommandStringOption()
         .setName('color')
         .setDescription('provide a color')
-        .setChoices(
-          {
-            name: 'Red',
-            value: '#ff0000',
-          },
-          {
-            name: 'Orange',
-            value: '#ff4400',
-          },
-          {
-            name: 'Yellow',
-            value: '#ffea00',
-          },
-          {
-            name: 'Green',
-            value: '#1cb622',
-          },
-          {
-            name: 'Mint',
-            value: '#00ff9a',
-          },
-          {
-            name: 'Blue',
-            value: '#2884c2',
-          },
-          {
-            name: 'Purple',
-            value: '#3000ff',
-          },
-          {
-            name: 'Pink',
-            value: '#ff00d4',
-          },
-          {
-            name: 'White',
-            value: '#ffffff',
-          },
-          {
-            name: 'Black',
-            value: '#0e0d0d',
-          },
-          {
-            name: 'Gray',
-            value: '#757070',
-          }
-        )
+        .setChoices(...colors)
         .setRequired(true)
     )
     .addStringOption(
