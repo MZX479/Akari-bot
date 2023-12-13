@@ -20,7 +20,9 @@ export class GiveawayController {
   constructor(guild: Guild) {
     this.guild = guild;
     this._db = MongoClient.db(guild.id);
-    this._collection = this._db.collection('Giveaways');
+    this._collection = this._db.collection(
+      process.env.GIVEAWAY_COLLECTION_NAME
+    );
   }
 
   @HandleErrorSecondary()

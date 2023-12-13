@@ -59,7 +59,8 @@ class Command extends InteractionTemplate {
       return await this.replyFalseH('Bounty in database does not exist!');
 
     const { author, content } = bountyDb;
-    const { bountyStatus, bounty, bountyReward, description } = content;
+    let { bountyStatus, bounty, bountyReward, description } = content;
+    if (!description) description = '';
     if (author !== this.author.user.id)
       return await this.replyFalseH('You are not the author of this bounty!');
 

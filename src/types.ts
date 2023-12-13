@@ -130,6 +130,12 @@ export type user_type = Partial<{
   };
 }>;
 
+export type warnType = {
+  moderator: string;
+  time: Date;
+  reason: string;
+};
+
 export type rulesType = {
   title: string;
   content: string;
@@ -148,6 +154,14 @@ export type bountyType = {
   description: string;
 };
 
+export type moderationType = {
+  title: string;
+  moderator: string;
+  member: string;
+  time: Date;
+  description: string;
+};
+
 export type DbNote = {
   _id?: ObjectId;
   author?: string;
@@ -162,7 +176,8 @@ export type DbNote = {
     bountyStatus?: 'active' | 'done' | 'canceled' | 'deleted';
     giveawayStatus?: 'active' | 'done';
     giveawayParticipants?: Array<string>;
-    description: string;
+    warns?: Array<warnType>;
+    description?: string;
   };
 };
 
@@ -186,4 +201,12 @@ export type rulesLogType = {
   title: string;
   description: string;
   msgId: string;
+};
+
+export type moderationLogType = {
+  title: string;
+  moderator: GuildMember;
+  member: GuildMember;
+  time: Date;
+  description: string;
 };

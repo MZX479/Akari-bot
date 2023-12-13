@@ -9,6 +9,7 @@ declare global {
       BOUNTY_COLLECTION_NAME: string;
       GIVEAWAY_COLLECTION_NAME: string;
       RULES_COLLECTION_NAME: string;
+      MODERATION_COLLECTION_NAME: string;
       RULES_CHANNEL_ID?: string;
       RULES_LOGS_CHANNEL_ID?: string;
       GIVEAWAY_CHANNEL_ID?: string;
@@ -17,6 +18,7 @@ declare global {
       BOUNTY_CHANNEL_ID?: string;
       BOUNTY_LOGS_CHANNEL_ID?: string;
       BUGS_CHANNEL_ID?: string;
+      MODERATION_LOGS_CHANNEL_ID?: string;
       DEV?: string;
     }
   }
