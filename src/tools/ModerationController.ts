@@ -87,9 +87,11 @@ export class ModerationController {
     if (!member || !reason || !embed)
       throw new Error('One of arguments was not provided!');
 
+    await this.sendDmEmbed(member, embed);
+
     await member.kick(reason);
 
-    return await this.sendDmEmbed(member, embed);
+    return await member.kick(reason);
   }
 
   @HandleErrorSecondaryAsync()
@@ -102,9 +104,9 @@ export class ModerationController {
     if (!member || !reason || !embed)
       throw new Error('One of arguments was not provided!');
 
-    await member.ban({ reason });
+    await this.sendDmEmbed(member, embed);
 
-    return await this.sendDmEmbed(member, embed);
+    return await member.ban({ reason });
   }
 
   async sendDmEmbed(member: GuildMember, content: EmbedBuilder) {

@@ -211,4 +211,6 @@ export type moderationLogType = {
   member: GuildMember;
   time: Date;
   description: string;
+  timeOfPunishment?: number;
+  timeOfPunishmentNoParse?: string;
 };
