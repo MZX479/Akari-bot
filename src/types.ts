@@ -130,10 +130,12 @@ export type user_type = Partial<{
   };
 }>;
 
-export type warnType = {
+export type violationsType = {
+  type: 'warn' | 'kick' | 'ban';
   moderator: string;
   time: Date;
   reason: string;
+  timeOfPunishment?: number;
 };
 
 export type rulesType = {
@@ -176,7 +178,7 @@ export type DbNote = {
     bountyStatus?: 'active' | 'done' | 'canceled' | 'deleted';
     giveawayStatus?: 'active' | 'done';
     giveawayParticipants?: Array<string>;
-    warns?: Array<warnType>;
+    violations?: Array<violationsType>;
     description?: string;
   };
 };

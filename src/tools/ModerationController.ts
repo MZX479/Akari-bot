@@ -75,29 +75,42 @@ export class ModerationController {
   }
 
   @HandleErrorSecondaryAsync()
-  async warn(member: GuildMember, content: EmbedBuilder) {
-    if (!member || !content)
-      throw new Error('Member or content were not provided!');
+  async warn(member: GuildMember, embed: EmbedBuilder) {
+    if (!member || !embed)
+      throw new Error('Member or embed were not provided!');
 
+    return await this.sendDmEmbed(member, embed);
+  }
+
+  @HandleErrorSecondaryAsync()
+  async kick(member: GuildMember, reason: string, embed: EmbedBuilder) {
+    if (!member || !reason || !embed)
+      throw new Error('One of arguments was not provided!');
+
+    await member.kick(reason);
+
+    return await this.sendDmEmbed(member, embed);
+  }
+
+  @HandleErrorSecondaryAsync()
+  async mute() {
+    /*Work in progress...*/
+  }
+
+  @HandleErrorSecondaryAsync()
+  async ban(member: GuildMember, reason: string, embed: EmbedBuilder) {
+    if (!member || !reason || !embed)
+      throw new Error('One of arguments was not provided!');
+
+    await member.ban({ reason });
+
+    return await this.sendDmEmbed(member, embed);
+  }
+
+  async sendDmEmbed(member: GuildMember, content: EmbedBuilder) {
     const dm = await member.user.createDM();
 
     return await dm.send({ embeds: [content] });
-  }
-
-  @HandleErrorSecondaryAsync()
-  async kick(member: GuildMember, reason: string) {
-    if (!member || !reason)
-      throw new Error('Member or reason were not provided!');
-
-    return await member.kick(reason);
-  }
-
-  @HandleErrorSecondaryAsync()
-  async ban(member: GuildMember, reason: string) {
-    if (!member || !reason)
-      throw new Error('Member or reason were not provided!');
-
-    return await member.ban({ reason });
   }
 
   @HandleErrorSecondaryAsync()
