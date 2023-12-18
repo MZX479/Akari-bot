@@ -120,6 +120,7 @@ export type config_type = {
   errors_channel: string;
   owner: string;
   guild_id: string;
+  muteRole: string;
   allowed_modules: CommandModuleType[];
 };
 
@@ -131,11 +132,11 @@ export type user_type = Partial<{
 }>;
 
 export type violationsType = {
-  type: 'warn' | 'kick' | 'ban';
+  type: 'warn' | 'kick' | 'ban' | 'mute';
   moderator: string;
   time: Date;
   reason: string;
-  timeOfPunishment?: number;
+  timeOfPunishment?: number | string;
 };
 
 export type rulesType = {

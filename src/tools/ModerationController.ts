@@ -1,5 +1,6 @@
+import config from '#config';
 import { DbNote } from '#types';
-import { MongoClient } from '@/Main';
+import { MongoClient, client } from '@/Main';
 import { HandleErrorSecondary, HandleErrorSecondaryAsync } from '@/decorators';
 import {
   ActionRowBuilder,
@@ -38,6 +39,11 @@ export class ModerationController {
   @HandleErrorSecondary()
   getEmbed(): EmbedBuilder {
     return new EmbedBuilder();
+  }
+
+  @HandleErrorSecondary()
+  getMuteRoleId(): string {
+    return config.muteRole;
   }
 
   @HandleErrorSecondaryAsync()
@@ -89,14 +95,33 @@ export class ModerationController {
 
     await this.sendDmEmbed(member, embed);
 
-    await member.kick(reason);
-
     return await member.kick(reason);
   }
 
   @HandleErrorSecondaryAsync()
-  async mute() {
-    /*Work in progress...*/
+  async mute(member: GuildMember, embed: EmbedBuilder) {
+    if (!member || !embed)
+      throw new Error('One of arguments was not provided!');
+
+    const role = this.getMuteRoleId();
+    if (!role) throw new Error('Mute role id does not exist!');
+
+    await this.sendDmEmbed(member, embed);
+
+    return await member.roles.add(role);
+  }
+
+  @HandleErrorSecondaryAsync()
+  async unmute(member: GuildMember, embed: EmbedBuilder) {
+    if (!member || !embed)
+      throw new Error('One of arguments was not provided!');
+
+    const role = this.getMuteRoleId();
+    if (!role) throw new Error('Mute role id does not exist!');
+
+    await this.sendDmEmbed(member, embed);
+
+    return await member.roles.remove(role);
   }
 
   @HandleErrorSecondaryAsync()
@@ -107,6 +132,14 @@ export class ModerationController {
     await this.sendDmEmbed(member, embed);
 
     return await member.ban({ reason });
+  }
+
+  @HandleErrorSecondaryAsync()
+  async unban(member: GuildMember, reason: string) {
+    if (!member || !reason)
+      throw new Error('One of arguments was not provided!');
+
+    return await this.guild.members.unban(member.user.id, reason);
   }
 
   async sendDmEmbed(member: GuildMember, content: EmbedBuilder) {

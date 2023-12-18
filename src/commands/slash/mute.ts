@@ -21,8 +21,8 @@ import parse from 'parse-duration';
 
 @Slash({
   data: new SlashCommandBuilder()
-    .setName('ban')
-    .setDescription('ban a member using this command')
+    .setName('warn')
+    .setDescription('warn a member using this command.')
     .addMentionableOption(
       new SlashCommandMentionableOption()
         .setName('member')
@@ -33,9 +33,13 @@ import parse from 'parse-duration';
       new SlashCommandStringOption()
         .setName('time')
         .setDescription('Specify time of ban. Examples: 1h; 1d; 7d; 30d')
+        .setRequired(true)
     )
     .toJSON(),
-  type: 'Utility',
+  type: 'Moderation',
+  permissions: {
+    allowed_roles: ['1162139543781265498', '1163749369229615175'],
+  },
 })
 class Command extends InteractionTemplate {
   interaction: CommandInteraction;
@@ -54,20 +58,16 @@ class Command extends InteractionTemplate {
 
   private async execute() {
     const member = this.get_argument('member').member as GuildMember;
-    let time = this.get_argument('time')?.value as string | undefined;
-    if (!time) time = 'permanent';
-    let newTime;
-    if (time !== 'permanent') {
-      const parsedTime = parse(time);
-      if (!parsedTime) return;
-      newTime = new Date().getTime() + parsedTime;
-    } else newTime = 'permanent';
+    const time = this.get_argument('time').value as string;
+    const parsedTime = parse(time);
+    if (!parsedTime) return;
+    const newTime = new Date().getTime() + parsedTime;
 
     if (member.user.id === this.author.user.id)
-      return await this.replyFalseH('You cannot ban yourself, silly!');
+      return await this.replyFalseH('You cannot warn yourself, silly!');
 
     if (member.user.id === client.user!.id)
-      return await this.replyFalseH('You cannot ban the bot!');
+      return await this.replyFalseH('You cannot warn the bot!');
 
     if (member.roles.highest.position >= this.author.roles.highest.position)
       return await this.replyFalseH('You cannot manage specified user');
@@ -94,39 +94,37 @@ class Command extends InteractionTemplate {
     let description = modalSubmit.fields.fields.get('description')?.value;
     if (!description) throw new Error('Description does not exist!');
 
-    const kickEmbed = this.getEmbed()
+    const warnEmbed = this.getEmbed()
       .setColor(Colors.Red)
-      .setTitle('You have been banned from Karuta Hangout!')
+      .setTitle('You have been warned on Karuta Hangout!')
       .addFields(
         { name: 'Moderator', value: `<@${this.author.user.id}>` },
-        { name: 'Reason', value: `\`${description}\`` },
-        { name: 'Time', value: time }
+        { name: 'Reason', value: `\`${description}\`` }
       )
       .setTimestamp(new Date());
 
-    await this.ban(member, description, kickEmbed);
+    await this.mute(member, warnEmbed);
 
-    const ban: violationsType = {
-      type: 'ban',
+    const logEmbed = this.createLog({
+      title: 'Mute',
+      member,
+      moderator: this.author,
+      description,
+      time: new Date(),
+    });
+
+    const mute: violationsType = {
+      type: 'mute',
       moderator: this.author.user.id,
       reason: description,
       time: new Date(),
       timeOfPunishment: newTime,
     };
 
-    const logEmbed = this.logCreate({
-      title: 'Ban',
-      member,
-      moderator: this.author,
-      description,
-      time: new Date(),
-      timeOfPunishmentNoParse: time,
-    });
-
     const getDbNote = await this.moderationController.getDbNote(member.user.id);
     if (!getDbNote) {
       const violations = [];
-      violations.push(ban);
+      violations.push(mute);
 
       await this.createDbNote({
         author: member.user.id,
@@ -135,7 +133,7 @@ class Command extends InteractionTemplate {
     } else {
       const violations = getDbNote.content.violations;
       if (!violations) throw new Error('Violations do not exist!');
-      violations.push(ban);
+      violations.push(mute);
 
       await this.updateDbNote({
         author: member.user.id,
@@ -143,9 +141,11 @@ class Command extends InteractionTemplate {
       });
     }
 
-    await this.logSend(logEmbed);
+    await this.sendLog(logEmbed);
 
-    await modalSubmit.reply({ content: `**Member was successfully banned!**` });
+    await modalSubmit.reply({
+      content: `**Member was successfully muted for \`${time}\`!**`,
+    });
 
     description = '';
 
@@ -156,26 +156,14 @@ class Command extends InteractionTemplate {
     return this.moderationController.getEmbed();
   }
 
-  async ban(member: GuildMember, reason: string, embed: EmbedBuilder) {
-    if (!member || !reason || !embed)
-      throw new Error('One of arguments not provided!');
+  async mute(member: GuildMember, embed: EmbedBuilder) {
+    if (!member || !embed)
+      throw new Error('Member or reason was not provided!');
 
-    return await this.moderationController.ban(member, reason, embed);
+    return await this.moderationController.mute(member, embed);
   }
 
-  async createDbNote(data: DbNote) {
-    if (!data) throw new Error('Data was not provided!');
-
-    return await this.moderationController.createDbNote(data);
-  }
-
-  async updateDbNote(data: DbNote) {
-    if (!data) throw new Error('Data was not provided!');
-
-    return await this.moderationController.editDbNote(data);
-  }
-
-  logCreate(data: moderationLogType): EmbedBuilder {
+  createLog(data: moderationLogType): EmbedBuilder {
     if (!data) throw new Error('Data was not provided!');
 
     const { title, description, member, moderator, timeOfPunishmentNoParse } =
@@ -208,10 +196,22 @@ class Command extends InteractionTemplate {
     return embed;
   }
 
-  async logSend(embed: EmbedBuilder) {
-    if (!embed) throw new Error('Embed was not provided!');
+  async createDbNote(data: DbNote) {
+    if (!data) throw new Error('Data was not provided!');
 
-    return await this.moderationController.sendLog(embed);
+    return await this.moderationController.createDbNote(data);
+  }
+
+  async updateDbNote(data: DbNote) {
+    if (!data) throw new Error('Data was not provided!');
+
+    return await this.moderationController.editDbNote(data);
+  }
+
+  async sendLog(logEmbed: EmbedBuilder) {
+    if (!logEmbed) throw new Error('Log embed was not provided');
+
+    return await this.moderationController.sendLog(logEmbed);
   }
 
   getModal(input: TextInputBuilder): ModalBuilder {
