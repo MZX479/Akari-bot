@@ -11,6 +11,7 @@ const dev_config: config_type = {
   owner: '544137839462580245',
   errors_channel: '1162645583476043876',
   guild_id: '1162105054300491776',
+  muteRole: '1186295404782964797',
   allowed_modules: ['Economy', 'Utility', 'Games', 'Shop', 'Moderation'],
 };
 

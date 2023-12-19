@@ -132,7 +132,7 @@ export type user_type = Partial<{
 }>;
 
 export type violationsType = {
-  type: 'warn' | 'kick' | 'ban' | 'mute';
+  type: 'warn' | 'kick' | 'ban' | 'mute' | 'unmute' | 'unban';
   moderator: string;
   time: Date;
   reason: string;

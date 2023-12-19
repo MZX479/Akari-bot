@@ -13,26 +13,18 @@ import {
   ModalBuilder,
   SlashCommandBuilder,
   SlashCommandMentionableOption,
-  SlashCommandStringOption,
   TextInputBuilder,
   TextInputStyle,
 } from 'discord.js';
-import parse from 'parse-duration';
 
 @Slash({
   data: new SlashCommandBuilder()
-    .setName('mute')
-    .setDescription('mute a member using this command.')
+    .setName('unmute')
+    .setDescription('unmute a member using this command.')
     .addMentionableOption(
       new SlashCommandMentionableOption()
         .setName('member')
         .setDescription('provide a member')
-        .setRequired(true)
-    )
-    .addStringOption(
-      new SlashCommandStringOption()
-        .setName('time')
-        .setDescription('Specify time of mute. Examples: 1h; 1d; 7d; 30d')
         .setRequired(true)
     )
     .toJSON(),
@@ -58,16 +50,12 @@ class Command extends InteractionTemplate {
 
   private async execute() {
     const member = this.get_argument('member').member as GuildMember;
-    const time = this.get_argument('time').value as string;
-    const parsedTime = parse(time);
-    if (!parsedTime) return;
-    const newTime = new Date().getTime() + parsedTime;
 
     if (member.user.id === this.author.user.id)
-      return await this.replyFalseH('You cannot mute yourself, silly!');
+      return await this.replyFalseH('You cannot unmute yourself, silly!');
 
     if (member.user.id === client.user!.id)
-      return await this.replyFalseH('You cannot mute the bot!');
+      return await this.replyFalseH('You cannot unmute the bot!');
 
     if (member.roles.highest.position >= this.author.roles.highest.position)
       return await this.replyFalseH('You cannot manage specified user');
@@ -94,38 +82,36 @@ class Command extends InteractionTemplate {
     let description = modalSubmit.fields.fields.get('description')?.value;
     if (!description) throw new Error('Description does not exist!');
 
-    const warnEmbed = this.getEmbed()
+    const unmuteEmbed = this.getEmbed()
       .setColor(Colors.Red)
-      .setTitle('You have been muted on Karuta Hangout!')
+      .setTitle('You have been unmuted on Karuta Hangout!')
       .addFields(
         { name: 'Moderator', value: `<@${this.author.user.id}>` },
-        { name: 'Reason', value: `\`${description}\`` },
-        { name: 'Time', value: `\`${time}\`` }
+        { name: 'Reason', value: `\`${description}\`` }
       )
       .setTimestamp(new Date());
 
-    await this.mute(member, warnEmbed);
+    await this.unmute(member, unmuteEmbed);
 
     const logEmbed = this.createLog({
-      title: 'Mute',
+      title: 'Unmute',
       member,
       moderator: this.author,
       description,
       time: new Date(),
     });
 
-    const mute: violationsType = {
-      type: 'mute',
+    const unmute: violationsType = {
+      type: 'unmute',
       moderator: this.author.user.id,
       reason: description,
       time: new Date(),
-      timeOfPunishment: newTime,
     };
 
     const getDbNote = await this.moderationController.getDbNote(member.user.id);
     if (!getDbNote) {
       const violations = [];
-      violations.push(mute);
+      violations.push(unmute);
 
       await this.createDbNote({
         author: member.user.id,
@@ -134,7 +120,7 @@ class Command extends InteractionTemplate {
     } else {
       const violations = getDbNote.content.violations;
       if (!violations) throw new Error('Violations do not exist!');
-      violations.push(mute);
+      violations.push(unmute);
 
       await this.updateDbNote({
         author: member.user.id,
@@ -145,7 +131,7 @@ class Command extends InteractionTemplate {
     await this.sendLog(logEmbed);
 
     await modalSubmit.reply({
-      content: `**Member was successfully muted for \`${time}\`!**`,
+      content: `**Member was successfully unmuted!**`,
     });
 
     description = '';
@@ -157,11 +143,11 @@ class Command extends InteractionTemplate {
     return this.moderationController.getEmbed();
   }
 
-  async mute(member: GuildMember, embed: EmbedBuilder) {
+  async unmute(member: GuildMember, embed: EmbedBuilder) {
     if (!member || !embed)
       throw new Error('Member or reason was not provided!');
 
-    return await this.moderationController.mute(member, embed);
+    return await this.moderationController.unmute(member, embed);
   }
 
   createLog(data: moderationLogType): EmbedBuilder {
@@ -186,10 +172,6 @@ class Command extends InteractionTemplate {
         {
           name: 'Reason',
           value: `\`${description}\``,
-        },
-        {
-          name: 'Time',
-          value: `\`${timeOfPunishmentNoParse}\``,
         }
       )
       .setTimestamp(new Date());
