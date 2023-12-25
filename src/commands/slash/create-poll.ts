@@ -190,14 +190,24 @@ class Command extends InteractionTemplate {
           choice_6 ? await this.setReaction(message, reactions[5]) : undefined;
         })();
 
-        await this.replyTrue('**Poll successfully posted**', {
-          components: [],
-        });
+        const finalTrueReply = await this.replyTrue(
+          '**Poll successfully posted**',
+          {
+            components: [],
+          }
+        );
+
+        setTimeout(() => finalTrueReply.delete(), 5000);
         break;
       case 'cancel':
-        await this.replyFalse('**Successfully canceled!**', {
-          components: [],
-        });
+        const finalFalseReply = await this.replyFalse(
+          '**Successfully canceled!**',
+          {
+            components: [],
+          }
+        );
+
+        setTimeout(() => finalFalseReply.delete(), 5000);
         break;
 
       default:
