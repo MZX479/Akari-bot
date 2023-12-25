@@ -36,13 +36,13 @@ export class BountyController extends MainController {
 
   @HandleErrorSecondary()
   private getBountyLogChannel(): TextChannel {
-    const channelId = process.env.BOUNTY_LOGS_CHANNEL_ID;
-    if (!channelId) throw new Error('Bounty log channel id does not exist!');
+    const channelId = process.env.LOGS_CHANNEL_ID;
+    if (!channelId) throw new Error('Log channel id does not exist!');
 
     const channel = this.interaction.guild!.channels.cache.get(
       channelId
     ) as TextChannel;
-    if (!channel) throw new Error('Bounty log channel does not exist!');
+    if (!channel) throw new Error('Log channel does not exist!');
 
     return channel;
   }

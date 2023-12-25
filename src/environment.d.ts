@@ -10,15 +10,15 @@ declare global {
       GIVEAWAY_COLLECTION_NAME: string;
       RULES_COLLECTION_NAME: string;
       MODERATION_COLLECTION_NAME: string;
+      POLLS_COLLECTION_NAME: string;
       RULES_CHANNEL_ID?: string;
-      RULES_LOGS_CHANNEL_ID?: string;
       GIVEAWAY_CHANNEL_ID?: string;
-      GIVEAWAY_LOGS_CHANNEL_ID?: string;
       GIVEAWAY_ROLE_ID?: string;
       BOUNTY_CHANNEL_ID?: string;
-      BOUNTY_LOGS_CHANNEL_ID?: string;
       BUGS_CHANNEL_ID?: string;
+      POLLS_CHANNEL_ID?: string;
       MODERATION_LOGS_CHANNEL_ID?: string;
+      LOGS_CHANNEL_ID?: string;
       DEV?: string;
     }
   }

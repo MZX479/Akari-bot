@@ -37,13 +37,13 @@ export class RulesController extends MainController {
 
   @HandleErrorSecondary()
   getRulesLogChannel(): TextChannel {
-    const channelId = process.env.RULES_LOGS_CHANNEL_ID;
-    if (!channelId) throw new Error('Rules log channel id does not exist!');
+    const channelId = process.env.LOGS_CHANNEL_ID;
+    if (!channelId) throw new Error('Log channel id does not exist!');
 
     const channel = this.interaction.guild!.channels.cache.get(
       channelId
     ) as TextChannel;
-    if (!channel) throw new Error('Rules log channel does not exist!');
+    if (!channel) throw new Error('Log channel does not exist!');
 
     return channel;
   }

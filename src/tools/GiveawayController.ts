@@ -51,11 +51,11 @@ export class GiveawayController {
 
   @HandleErrorSecondary()
   getGiveawayLogChannel(): TextChannel {
-    const channelId = process.env.GIVEAWAY_LOGS_CHANNEL_ID;
-    if (!channelId) throw new Error('Giveaway log channel id does not exist!');
+    const channelId = process.env.LOGS_CHANNEL_ID;
+    if (!channelId) throw new Error('Log channel id does not exist!');
 
     const channel = this.guild!.channels.cache.get(channelId) as TextChannel;
-    if (!channel) throw new Error('Giveaway log channel does not exist!');
+    if (!channel) throw new Error('Log channel does not exist!');
 
     return channel;
   }

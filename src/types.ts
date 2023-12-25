@@ -165,6 +165,10 @@ export type moderationType = {
   description: string;
 };
 
+export type PollsChoices = {
+  choiceName: string;
+};
+
 export type DbNote = {
   _id?: ObjectId;
   author?: string;
