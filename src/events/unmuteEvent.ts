@@ -34,7 +34,7 @@ class Event extends ModerationController {
       )
       .setTimestamp(new Date());
 
-    const targetsDb = await MongoClient.db('moderation')
+    const targetsDb = await MongoClient.db(guild.id)
       .collection<DbNote>('Moderation')
       .find({
         content: {
@@ -49,6 +49,7 @@ class Event extends ModerationController {
         },
       })
       .toArray();
+    if (!targetsDb) return;
 
     for (const mute of targetsDb) {
       if (!guild) continue;
