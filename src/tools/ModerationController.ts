@@ -20,9 +20,7 @@ export class ModerationController {
   constructor(guild: Guild) {
     this.guild = guild;
     this._db = MongoClient.db(guild.id);
-    this._collection = this._db.collection(
-      process.env.MODERATION_COLLECTION_NAME
-    );
+    this._collection = this._db.collection('Moderation');
   }
 
   @HandleErrorSecondaryAsync()
