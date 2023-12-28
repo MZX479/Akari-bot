@@ -34,8 +34,7 @@ class Event extends ModerationController {
       )
       .setTimestamp(new Date());
 
-    const targetsDb = await MongoClient.db(guild.id)
-      .collection<DbNote>('Moderation')
+    const targetsDb = await this._collection
       .find({
         content: {
           violations: [

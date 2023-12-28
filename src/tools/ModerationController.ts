@@ -15,7 +15,7 @@ import { Collection, Db } from 'mongodb';
 
 export class ModerationController {
   private _db: Db;
-  private _collection: Collection;
+  _collection: Collection;
   private guild: Guild;
   constructor(guild: Guild) {
     this.guild = guild;

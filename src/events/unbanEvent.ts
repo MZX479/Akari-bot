@@ -1,7 +1,6 @@
 import config from '#config';
-import { DbNote } from '#types';
 import { HandleError, HandleErrorSecondaryAsync, Ready } from '@/decorators';
-import { client, MongoClient } from '@/Main';
+import { client } from '@/Main';
 import { ModerationController } from '@/tools/ModerationController';
 import { Guild } from 'discord.js';
 
@@ -23,8 +22,7 @@ class Event extends ModerationController {
   async _checkBans() {
     const guild = client.guilds.cache.get(config.guild_id) as Guild;
 
-    const targetsDb = await MongoClient.db(guild.id)
-      .collection<DbNote>('Moderation')
+    const targetsDb = await this._collection
       .find({
         content: {
           violations: [
