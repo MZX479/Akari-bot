@@ -47,13 +47,15 @@ export class MainController extends InteractionTemplate {
   async createDbNote(data: DbNote) {
     if (!data) throw new Error('Db data was not provided, [createDbNote]');
 
-    let { author, giveawayTime, msgId, content } = data;
+    let { author, target, giveawayTime, msgId, content } = data;
     if (!giveawayTime) giveawayTime = 0;
     if (!author) author = 'none';
+    if (!target) target = 'none';
 
     return await this._collection.insertOne({
       author,
       giveawayTime,
+      target,
       msgId,
       content,
     });

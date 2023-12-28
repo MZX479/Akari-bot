@@ -172,6 +172,7 @@ export type PollsChoices = {
 export type DbNote = {
   _id?: ObjectId;
   author?: string;
+  target?: string;
   giveawayTime?: number;
   msgId?: string;
   content: {
