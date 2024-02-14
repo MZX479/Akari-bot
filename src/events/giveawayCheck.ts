@@ -63,8 +63,8 @@ class Event extends GiveawayController {
               value: 'Done',
             },
             {
-              name: 'Card',
-              value: `\`${content.card}\``,
+              name: 'Prize',
+              value: `\`${content.prize}\``,
             },
             {
               name: 'Description',
@@ -78,7 +78,7 @@ class Event extends GiveawayController {
           msgId,
           content: {
             description: 'Giveaway failed, no one participated!',
-            card: content.card,
+            prize: content.prize,
             giveawayStatus: 'done',
             sponsor: content.sponsor,
           },
@@ -110,8 +110,8 @@ class Event extends GiveawayController {
             value: `\`Done\``,
           },
           {
-            name: 'Card',
-            value: `\`${content.card}\``,
+            name: 'Prize',
+            value: `\`${content.prize}\``,
           },
           {
             name: 'Description',
@@ -123,16 +123,17 @@ class Event extends GiveawayController {
 
       await this.editMessage(message, giveawayEmbed, []);
       await giveawayChannel.send(
-        `**Congratulations <@${findWinner}>, you won \`${content.card}\`!**`
+        `**Congratulations <@${findWinner}>, you won \`${content.prize}\`!**`
       );
       await this.updateDbNote({
         msgId,
         content: {
           giveawayStatus: 'done',
-          card: content.card,
+          prize: content.prize,
           winner: findWinner,
           sponsor: content.sponsor,
           description: `Giveaway done. Winner: ${findWinner}`,
+          giveawayParticipants: participants,
         },
       });
 
@@ -149,8 +150,8 @@ class Event extends GiveawayController {
             value: 'Done',
           },
           {
-            name: 'Card',
-            value: `\`${content.card}\``,
+            name: 'Prize',
+            value: `\`${content.prize}\``,
           },
           {
             name: 'Description',

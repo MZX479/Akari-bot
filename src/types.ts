@@ -146,7 +146,7 @@ export type rulesType = {
 
 export type giveawayType = {
   sponsor: GuildMember;
-  card: string;
+  prize: string;
   timer: number;
   description: string;
 };
@@ -178,7 +178,7 @@ export type DbNote = {
   content: {
     sponsor?: string;
     winner?: string;
-    card?: string;
+    prize?: string;
     bounty?: string;
     bountyReward?: string;
     bountyStatus?: 'active' | 'done' | 'canceled' | 'deleted';
@@ -200,7 +200,7 @@ export type bountyLogType = {
 export type giveawayLogType = {
   sponsor: GuildMember;
   timer: number;
-  card: string;
+  prize: string;
   description: string;
   msgId: string;
 };

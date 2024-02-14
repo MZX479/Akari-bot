@@ -27,7 +27,7 @@ import {
     .setDescription('create a giveaway using this command')
     .addStringOption(
       new SlashCommandStringOption()
-        .setName('card')
+        .setName('prize')
         .setDescription('provide a card code.')
         .setRequired(true)
     )
@@ -66,7 +66,7 @@ class Command extends InteractionTemplate {
 
   @HandleErrorAsync()
   private async execute() {
-    const card = this.get_argument('card').value as string;
+    const prize = this.get_argument('prize').value as string;
     const sponsor = this.get_argument('sponsor').member as GuildMember;
     const timer = this.get_argument('time').value as string;
 
@@ -78,7 +78,7 @@ class Command extends InteractionTemplate {
     const button = this.getButton();
     const giveawayEmbed = await this.createGiveawayEmbed({
       sponsor,
-      card,
+      prize,
       timer: newTime,
       description,
     });
@@ -86,7 +86,7 @@ class Command extends InteractionTemplate {
     const sendGiveaway = await this.sendGiveaway(giveawayEmbed, button);
 
     const giveawayLog = await this.logCreate({
-      card,
+      prize,
       description,
       sponsor,
       timer: newTime,
@@ -101,7 +101,7 @@ class Command extends InteractionTemplate {
       content: {
         sponsor: sponsor.user.id,
         description,
-        card,
+        prize,
         giveawayStatus: 'active',
         giveawayParticipants: [],
       },
@@ -124,7 +124,7 @@ class Command extends InteractionTemplate {
 
   @HandleErrorSecondaryAsync()
   async createGiveawayEmbed(data: giveawayType): Promise<EmbedBuilder> {
-    const { sponsor, timer, card, description } = data;
+    const { sponsor, timer, prize, description } = data;
 
     const embed = this.getEmbed()
       .setAuthor({
@@ -137,7 +137,7 @@ class Command extends InteractionTemplate {
       .addFields(
         { name: 'Sponsor', value: `<@${sponsor.user.id}>` },
         { name: 'Time', value: `${time(new Date(timer), 'R')}` },
-        { name: 'Card', value: `\`${card}\`` },
+        { name: 'Prize', value: `\`${prize}\`` },
         { name: 'Description', value: description }
       )
       .setFooter({ text: '↓ Click ↓' })
@@ -160,7 +160,7 @@ class Command extends InteractionTemplate {
   async logCreate(data: giveawayLogType): Promise<EmbedBuilder> {
     if (!data) throw new Error('Data was not provided!');
 
-    const { sponsor, timer, card, description, msgId } = data;
+    const { sponsor, timer, prize, description, msgId } = data;
 
     const embed = this.getEmbed()
       .setAuthor({
@@ -174,7 +174,7 @@ class Command extends InteractionTemplate {
         { name: 'Creator', value: `<@${this.author.user.id}>` },
         { name: 'Sponsor', value: `<@${sponsor.user.id}>` },
         { name: 'Time', value: `${time(new Date(timer), 'R')}` },
-        { name: 'Card', value: `\`${card}\`` },
+        { name: 'Prize', value: `\`${prize}\`` },
         { name: 'Description', value: description },
         { name: 'Msg Id', value: `\`${msgId}\`` }
       )
