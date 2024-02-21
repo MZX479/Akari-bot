@@ -169,6 +169,12 @@ export type PollsChoices = {
   choiceName: string;
 };
 
+export type reminderType = {
+  author: string;
+  timer: number;
+  content: string;
+};
+
 export type DbNote = {
   _id?: ObjectId;
   author?: string;
@@ -187,6 +193,14 @@ export type DbNote = {
     violations?: Array<violationsType>;
     description?: string;
   };
+};
+
+export type remindDbType = {
+  _id?: ObjectId;
+  authorId: string;
+  timer: number;
+  status: 'active' | 'done';
+  content: string;
 };
 
 export type bountyLogType = {
@@ -220,3 +234,8 @@ export type moderationLogType = {
   timeOfPunishment?: number;
   timeOfPunishmentNoParse?: string;
 };
+
+type noteDb = Partial<{
+  id: number;
+  content: string;
+}>;

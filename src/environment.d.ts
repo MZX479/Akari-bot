@@ -11,6 +11,7 @@ declare global {
       RULES_COLLECTION_NAME: string;
       MODERATION_COLLECTION_NAME: string;
       POLLS_COLLECTION_NAME: string;
+      REMINDERS_COLLECTION_NAME: string;
       RULES_CHANNEL_ID?: string;
       GIVEAWAY_CHANNEL_ID?: string;
       GIVEAWAY_ROLE_ID?: string;
@@ -19,6 +20,7 @@ declare global {
       POLLS_CHANNEL_ID?: string;
       MODERATION_LOGS_CHANNEL_ID?: string;
       LOGS_CHANNEL_ID?: string;
+      MAIN_CHANNEL_ID?: string;
       DEV?: string;
     }
   }
