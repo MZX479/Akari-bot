@@ -1,9 +1,10 @@
 {
-  "name": "clean-slash-handler",
+  "name": "akari-bot",
   "owners": "mzx479, loli_knight",
-  "originally-created-by": "loli_knight",
-  "version": "1.9",
-  "description": "Custom slash handler for discord bots",
+  "owners-id": {"mzx479": "544137839462580245", "loli_knight": "348038599083556864"},
+  "handler-originally-created-by": "loli_knight",
+  "version": "2.0",
+  "description": "Custom bot for guild (1162105054300491776)",
   "main": "dist/Main.js",
   "devDependencies": {
     "@types/uuid": "^9.0.5",
