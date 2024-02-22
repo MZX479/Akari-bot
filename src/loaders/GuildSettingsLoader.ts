@@ -15,7 +15,7 @@ class _GuildSettingsLoader {
 
   private async _get_settings(guild_id: string): Promise<GuildSettingsType> {
     const db = MongoClient.db(guild_id);
-    Logger.log(`Инициация запроса настроек для сервера ${guild_id}`);
+    Logger.log(`Initiating settings for server ${guild_id}`);
 
     const GuildSettingsCollection = db.collection('GuildSettings');
     const settings_data =
@@ -24,9 +24,7 @@ class _GuildSettingsLoader {
       });
 
     if (!settings_data) {
-      Logger.log(
-        `Существующих настроек для сервера ${guild_id} найдено не было. Создаю новую запись настроек`
-      );
+      Logger.log(`Settings for ${guild_id} do not exist!. Setting up...`);
 
       await GuildSettingsCollection.insertOne({
         guild_id,
@@ -34,12 +32,10 @@ class _GuildSettingsLoader {
       }).catch((err) =>
         handle_error(err, '[GuildSettingsLoader] _get_settings')
       );
-      Logger.log(
-        `Начальные настройки для сервера ${guild_id} успешно установлены`
-      );
+      Logger.log(`First settings for ${guild_id} successfully set!`);
     }
 
-    Logger.log(`Загрузил и отдал настройки для сервера ${guild_id}`);
+    Logger.log(`Loaded and exported settings for ${guild_id}`);
 
     return settings_data || GuildSettingsTemplate;
   }

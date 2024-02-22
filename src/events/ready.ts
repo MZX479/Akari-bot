@@ -17,8 +17,8 @@ class Event {
         status: 'dnd',
         activities: [
           {
-            name: `Where is this damn makeup bag!? Version: ${process.env.npm_package_version}`,
-            type: ActivityType.Playing,
+            name: `Version: ${process.env.npm_package_version}`,
+            type: ActivityType.Watching,
           },
         ],
       });

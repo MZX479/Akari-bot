@@ -26,17 +26,17 @@ export class _MessageLoader {
   invoke(name: string, message: Message) {
     try {
       Logger.log(
-        `Получена новая префикс комманда ${name} от пользователя ${message.author.id} на сервере ${message.guild?.id}`
+        `Got a new prefix command ${name} from user ${message.author.id} on guild ${message.guild?.id}`
       );
       const command_to_invoke = this._commands_list.filter(
         (command) => command.payload.data.name === name
       )[0];
 
       if (!command_to_invoke)
-        return Logger.error(`/-комманда ${name} не найдена`);
+        return Logger.error(`/-command ${name} was not found!`);
 
-      Logger.log(`Найдена /-комманда ${name}`);
-      Logger.log(`Перехожу к вызову комманды`);
+      Logger.log(`Found /-command ${name}`);
+      Logger.log(`Starting to call a command`);
       new command_to_invoke.command(message);
     } catch (e) {
       format_error(e as CustomError, '[loader SlashLoader]');
