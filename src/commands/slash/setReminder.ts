@@ -7,6 +7,7 @@ import {
   Slash,
 } from '@/decorators';
 import { remindersController } from '@/tools/remController';
+import { uid } from 'uid';
 
 import {
   CommandInteraction,
@@ -79,7 +80,8 @@ class Command extends InteractionTemplate {
 
     await this.createDbNote({
       authorId: this.author.id,
-      timer: parsedTime,
+      timer: newTime,
+      id: uid(25),
       status: 'active',
       content: description,
     });

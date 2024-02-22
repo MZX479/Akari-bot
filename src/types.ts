@@ -199,6 +199,7 @@ export type remindDbType = {
   _id?: ObjectId;
   authorId: string;
   timer: number;
+  id: string;
   status: 'active' | 'done';
   content: string;
 };

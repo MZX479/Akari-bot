@@ -62,14 +62,30 @@ export class remindersController {
   async createReminderDbNote(note: remindDbType) {
     if (!note) throw new Error('Note was not provided!');
 
-    const { authorId, timer, status, content } = note;
+    const { authorId, timer, id, status, content } = note;
 
     return await this._collection.insertOne({
       authorId,
       timer,
+      id,
       status,
       content,
     });
+  }
+
+  async updateReminderDbNote(id: string, status: remindDbType['status']) {
+    if (!id || !status) throw new Error('Note was not provided!');
+
+    return await this._collection.updateOne(
+      {
+        id,
+      },
+      {
+        $set: {
+          status,
+        },
+      }
+    );
   }
 
   @HandleErrorSecondary()
