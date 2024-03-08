@@ -2,6 +2,7 @@ import {
   ActionRowBuilder,
   EmbedBuilder,
   Guild,
+  GuildMember,
   ModalBuilder,
   TextChannel,
   TextInputBuilder,
@@ -28,34 +29,27 @@ export class remindersController {
     return new EmbedBuilder();
   }
 
-  @HandleErrorSecondary()
-  getChannelId(): string {
-    const channelId = process.env.MAIN_CHANNEL_ID;
-    if (!channelId) throw new Error('Channel id does not exist!');
+  async getMember(memberId: string): Promise<GuildMember> {
+    const member = await this.guild.members.fetch(memberId);
+    if (!member) throw new Error('Member does not exist!');
 
-    return channelId;
-  }
-
-  @HandleErrorSecondary()
-  getChannel(): TextChannel {
-    const channelId = this.getChannelId();
-    if (!channelId) throw new Error('Channel id does not exist!');
-
-    const channel = this.guild!.channels.cache.get(channelId) as TextChannel;
-    if (!channel) throw new Error('Channel does not exist!');
-
-    return channel;
+    return member;
   }
 
   @HandleErrorSecondaryAsync()
-  async sendReminder(authorId: string, embed: EmbedBuilder) {
-    if (!authorId || !embed)
-      throw new Error('Embed or author id were not provided!!');
+  async getDm(member: GuildMember) {
+    return await member.user.createDM();
+  }
 
-    const channel = this.getChannel();
-    if (!channel) throw new Error('Channel does not exist!');
+  @HandleErrorSecondaryAsync()
+  async sendReminder(member: GuildMember, embed: EmbedBuilder) {
+    if (!member || !embed)
+      throw new Error('Embed or member were not provided!!');
 
-    return await channel.send({ content: `<@${authorId}>`, embeds: [embed] });
+    const dm = await this.getDm(member);
+    if (!dm) throw new Error('Dm does not exist!');
+
+    return await dm.send({ embeds: [embed] });
   }
 
   @HandleErrorSecondaryAsync()

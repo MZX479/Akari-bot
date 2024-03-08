@@ -9,7 +9,13 @@ import {
 } from '@/decorators';
 import { GiveawayController } from '@/tools';
 import { remindersController } from '@/tools/remController';
-import { Colors, EmbedBuilder, Guild, TextChannel } from 'discord.js';
+import {
+  Colors,
+  EmbedBuilder,
+  Guild,
+  GuildMember,
+  TextChannel,
+} from 'discord.js';
 
 @Ready()
 class Event extends remindersController {
@@ -28,7 +34,6 @@ class Event extends remindersController {
   @HandleErrorSecondaryAsync()
   async _checkReminders() {
     const reminders = await this.getDbNotes();
-    const channel = this.getCurrentChannel();
 
     const replyEmbed = this.getEmptyEmbed()
       .setTitle('Reminder!')
@@ -43,23 +48,23 @@ class Event extends remindersController {
 
       replyEmbed.setDescription(`**${reminder.content}**`);
 
-      const reply = await channel.send({
-        content: `<@${reminder.authorId}>`,
-        embeds: [replyEmbed],
-      });
+      const member = await this.getMember(reminder.authorId);
+      if (!member) continue;
 
-      setTimeout(() => reply.delete(), 300000);
+      await this.sendRem(member, replyEmbed);
     }
-  }
-
-  @HandleErrorSecondary()
-  getCurrentChannel(): TextChannel {
-    return this.getChannel();
   }
 
   @HandleErrorSecondary()
   getEmptyEmbed(): EmbedBuilder {
     return this.getEmbed();
+  }
+
+  @HandleErrorSecondaryAsync()
+  async sendRem(member: GuildMember, embed: EmbedBuilder) {
+    if (!member || !embed) throw new Error('Member or embed were not provided');
+
+    return await this.sendReminder(member, embed);
   }
 
   @HandleErrorSecondaryAsync()

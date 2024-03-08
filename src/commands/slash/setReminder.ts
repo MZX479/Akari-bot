@@ -55,7 +55,7 @@ class Command extends InteractionTemplate {
     const inputField = new TextInputBuilder()
       .setLabel('Describe character/card you want.')
       .setCustomId('description')
-      .setMinLength(10)
+      .setMinLength(3)
       .setMaxLength(300)
       .setStyle(TextInputStyle.Paragraph)
       .setRequired(true);
