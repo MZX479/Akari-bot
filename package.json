@@ -3,7 +3,7 @@
   "owners": "mzx479, loli_knight",
   "owners-id": {"mzx479": "544137839462580245", "loli_knight": "348038599083556864"},
   "handler-originally-created-by": "loli_knight",
-  "version": "2.0",
+  "version": "2.0.1",
   "description": "Custom bot for guild (1162105054300491776)",
   "main": "dist/Main.js",
   "devDependencies": {
