@@ -1,3 +1,3 @@
 # Akari-bot
 
-Custom dicord bot for Karuta Hangout
+Custom discord bot for Karuta Hangout
