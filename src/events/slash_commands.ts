@@ -1,7 +1,11 @@
 import { InteractionTemplate } from '@/config/templates';
 import { HandleErrorAsync, InteractionCreate } from '@/decorators';
 import { SlashLoader } from '@/loaders';
-import { CommandInteraction, GuildMemberRoleManager } from 'discord.js';
+import {
+  CommandInteraction,
+  GuildMemberRoleManager,
+  PermissionsBitField,
+} from 'discord.js';
 
 @InteractionCreate()
 class Event extends InteractionTemplate {
@@ -24,7 +28,8 @@ class Event extends InteractionTemplate {
       : command_data?.permissions;
 
     if (slash_permissions) {
-      const { allowed_roles, restricted_roles } = slash_permissions;
+      const { allowed_roles, restricted_roles, permissions } =
+        slash_permissions;
 
       const member = interaction.member;
       const roles = (member?.roles as GuildMemberRoleManager).cache;
@@ -36,6 +41,11 @@ class Event extends InteractionTemplate {
         access = !!allowed_roles.filter((role_id) => roles.has(role_id))[0];
       else if (restricted_roles && restricted_roles[0])
         access = !restricted_roles.filter((role_id) => roles.has(role_id))[0];
+      else if (permissions && permissions[0])
+        access = !permissions.find(
+          (perm) =>
+            !(interaction.member?.permissions as PermissionsBitField).has(perm)
+        );
       else access = true;
 
       if (!access)
