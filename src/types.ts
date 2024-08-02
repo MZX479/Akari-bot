@@ -236,7 +236,15 @@ export type moderationLogType = {
   timeOfPunishmentNoParse?: string;
 };
 
-type noteDb = Partial<{
-  id: number;
-  content: string;
-}>;
+export type taskType = {
+  creationTime: number;
+  taskId: string;
+  description: string;
+  status: 'open' | 'closed' | 'failed';
+};
+
+export type plannerType = {
+  _id?: ObjectId;
+  author: string;
+  tasks: Array<taskType>;
+};
