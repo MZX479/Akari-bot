@@ -10,7 +10,7 @@ import {
 } from 'discord.js';
 import { Collection, Db } from 'mongodb';
 
-export class Planner {
+export class PlannerController {
   private _db: Db;
   private _collection: Collection;
   constructor(guild: Guild) {

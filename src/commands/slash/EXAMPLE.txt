@@ -19,6 +19,7 @@ class Command extends InteractionTemplate {
     this.execute();
   }
 
+  @HandleErrorAsync()
   private async execute() {
     return;
   }
