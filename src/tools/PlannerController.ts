@@ -10,6 +10,13 @@ import {
 } from 'discord.js';
 import { Collection, Db } from 'mongodb';
 
+type updateType = {
+  authorId: string;
+  taskId: string;
+  status?: taskType['status'];
+  description?: string;
+};
+
 export class PlannerController {
   private _db: Db;
   private _collection: Collection;
@@ -24,11 +31,13 @@ export class PlannerController {
   }
 
   @HandleErrorSecondaryAsync()
-  async getDbNote(author: string): Promise<plannerType> {
-    if (!author)
+  async getDbNote(authorId: string): Promise<plannerType> {
+    if (!authorId)
       throw new Error('Author was not provided! [getDbNote (Planner)]');
 
-    const note = await this._collection.findOne<plannerType>({ author });
+    const note = await this._collection.findOne<plannerType>({
+      author: authorId,
+    });
     if (!note) throw new Error('DbNote was not found [getDbNote (Planner)]');
 
     return note;
@@ -60,6 +69,23 @@ export class PlannerController {
   }
 
   @HandleErrorSecondaryAsync()
+  async getTaskFromDb(authorId: string, taskId: string) {
+    if (!authorId || !taskId)
+      throw new Error(
+        'Author id or task id must be provided! [getTask] (Planner)'
+      );
+
+    const note = await this.getDbNote(authorId);
+    if (!note) throw new Error('Db note does not exist!');
+
+    const filterredTask = note.tasks.filter(
+      (task) => task.taskId === taskId
+    )[0];
+
+    return filterredTask;
+  }
+
+  @HandleErrorSecondaryAsync()
   async addTask(authorId: string, task: taskType) {
     if (!authorId || !task)
       throw new Error(
@@ -69,6 +95,7 @@ export class PlannerController {
     const note = await this._collection.findOne<plannerType>({
       author: authorId,
     });
+
     if (!note) {
       const newTasks = [];
       newTasks.push(task);
@@ -78,22 +105,50 @@ export class PlannerController {
         tasks: newTasks,
       });
     } else {
-      return note.tasks.push(task);
+      const newTasks = note.tasks;
+      newTasks.push(task);
+
+      return await this.updateDbNote({ author: authorId, tasks: newTasks });
     }
   }
 
   @HandleErrorSecondaryAsync()
-  async editTask(authorId: string, taskId: string, description: string) {
+  async editTask(data: updateType) {
+    const { authorId, taskId } = data;
+
     if (!authorId || !taskId)
       throw new Error(
-        'One or more argumnets were not provided! [editTask] (Planner)'
+        'Author id or task id were not provided! [editTask] (Planner)'
+      );
+
+    if (!data.description && !data.status)
+      throw new Error(
+        'One of the arguments to change must be provided! [edittask] (Planner)'
       );
 
     const note = await this.getDbNote(authorId);
 
-    const filterTask = note.tasks.filter((task) => task.taskId === taskId)[0];
+    const filterTask = note.tasks.filter(
+      (task) => task.taskId === taskId
+    )[0] as taskType;
 
-    return (filterTask.description = description);
+    if (data.description) {
+      filterTask.description = data.description;
+
+      const newTasks = note.tasks.filter((id) => id.taskId !== taskId);
+      newTasks.push(filterTask);
+
+      return await this.updateDbNote({ author: authorId, tasks: newTasks });
+    }
+
+    if (data.status) {
+      filterTask.status = data.status;
+
+      const newTasks = note.tasks.filter((id) => id.taskId !== taskId);
+      newTasks.push(filterTask);
+
+      return await this.updateDbNote({ author: authorId, tasks: newTasks });
+    }
   }
 
   @HandleErrorSecondaryAsync()
