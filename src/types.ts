@@ -239,8 +239,16 @@ export type moderationLogType = {
 export type taskType = {
   creationTime: number;
   taskId: string;
+  name: string;
   description: string;
-  status: 'open' | 'closed' | 'failed';
+  status: 'open' | 'successfull' | 'failed';
+};
+
+export type updateType = {
+  authorId: string;
+  taskId: string;
+  status?: taskType['status'];
+  description?: string;
 };
 
 export type plannerType = {
