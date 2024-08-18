@@ -1,5 +1,8 @@
 FROM node:lts-alpine
 WORKDIR /
-COPY . .
+COPY package*.json .
 RUN npm install
-CMD ["npm", "run", "production"]
+COPY . . 
+RUN npm run build
+CMD ["npm", "run", "start"]
+
