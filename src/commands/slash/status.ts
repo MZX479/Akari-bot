@@ -68,6 +68,21 @@ class Command extends InteractionTemplate {
           value: time(client!.readyAt!, 'R'),
           inline: true,
         },
+        {
+          name: '📤 Last Update',
+          value: '`2:45 pm, 08.18.2024`',
+          inline: true,
+        },
+        {
+          name: '\u200b',
+          value: `\u200b`,
+          inline: true,
+        },
+        {
+          name: '🌐 Server Location',
+          value: '`Netherlands`',
+          inline: true,
+        },
       ])
       .setFooter({
         text: `Version: ${process.env.npm_package_version}`,
