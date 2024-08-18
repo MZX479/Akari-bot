@@ -10,6 +10,7 @@ import { PlannerController } from '@/tools/PlannerController';
 import {
   CommandInteraction,
   SlashCommandBuilder,
+  SlashCommandStringOption,
   TextInputBuilder,
   TextInputStyle,
 } from 'discord.js';
@@ -19,6 +20,11 @@ import { uid } from 'uid';
   data: new SlashCommandBuilder()
     .setName('add-task')
     .setDescription('add a personal task')
+    .addStringOption(
+      new SlashCommandStringOption()
+        .setName('task-name')
+        .setDescription('provide a task name (optionable)')
+    )
     .toJSON(),
   type: 'Utility',
 })
@@ -35,6 +41,10 @@ class Command extends InteractionTemplate {
 
   @HandleErrorAsync()
   private async execute() {
+    const taskName = this.get_argument('task-name')?.value as
+      | string
+      | undefined;
+
     const inputField = new TextInputBuilder()
       .setLabel('Describe your task.')
       .setCustomId('description')
@@ -59,7 +69,8 @@ class Command extends InteractionTemplate {
 
     const newTask: taskType = {
       creationTime: new Date().getTime(),
-      taskId: uid(32),
+      taskId: uid(16),
+      name: taskName || 'Task name not provided!',
       description,
       status: 'open',
     };
