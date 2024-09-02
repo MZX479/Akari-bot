@@ -241,7 +241,7 @@ export type taskType = {
   taskId: string;
   name: string;
   description: string;
-  status: 'open' | 'successfull' | 'failed';
+  status: 'open' | 'successful' | 'failed';
 };
 
 export type updateType = {
