@@ -62,7 +62,7 @@ class Command extends InteractionTemplate {
 
     await this.updateTask(authorId, taskId, description)
 
-    await modalSubmit.reply('> **Description was successfully updated!**')
+    await modalSubmit.reply({content: '> **Description was successfully updated!**', ephemeral: true})
   }
 
   @HandleErrorSecondary()

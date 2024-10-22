@@ -59,12 +59,13 @@ class Command extends InteractionTemplate {
     taskEmbed.setTitle('Task preview:');
     taskEmbed
       .addFields(
-        { name: 'Task Name:', value: `\`${getTask.name}\``, inline: true },
-        { name: 'Task Id:', value: `\`${getTask.taskId}\``, inline: true },
+        { name: '🔤 Task Name:', value: `\`${getTask.name}\``, inline: true },
         { name: '\u200b', value: `\u200b`, inline: true },
-        { name: 'Task Status:', value: `\`${getTask.status}\``, inline: true },
+        { name: '1️⃣ Task Id:', value: `\`${getTask.taskId}\``, inline: true },
+        { name: '🔰 Task Status:', value: `\`${getTask.status}\``, inline: true },
+        { name: '\u200b', value: `\u200b`, inline: true },
         {
-          name: 'Task Description:',
+          name: '💬 Task Description:',
           value: `\`${getTask.description}\``,
           inline: true,
         }
@@ -72,9 +73,9 @@ class Command extends InteractionTemplate {
       .setFooter({ text: 'Choose status below:' })
       .setTimestamp(new Date());
 
-    const previewReply = await this.createButtonReply(taskEmbed);
-    if (!previewReply)
-      throw new Error('Preview reply was not created or does not exist!');
+    const previewReply = await this.createButtonReply(taskEmbed)
+    if(!previewReply) return await this.send({content: '> `Time is up!`', components: [], embeds: []})
+
 
     switch (previewReply.customId) {
       case 'success':
@@ -91,7 +92,12 @@ class Command extends InteractionTemplate {
           components: [],
         });
         break;
-
+      case 'cancel':
+        previewReply.reply({
+          content: '`See you!`',
+          components: [],
+        });
+        break;
       default:
         break;
     }
@@ -133,6 +139,10 @@ class Command extends InteractionTemplate {
         .setStyle(ButtonStyle.Danger)
         .setLabel('Failed')
         .setCustomId('failed'),
+      new ButtonBuilder()
+        .setLabel('Cancel')
+        .setStyle(ButtonStyle.Secondary)
+        .setCustomId('cancel')
     ];
 
     return buttons;
@@ -149,17 +159,10 @@ class Command extends InteractionTemplate {
         new ActionRowBuilder().addComponents(...statusButtons),
       ] as any,
       ephemeral: true,
-    });
+    }).catch()
 
-    return await reply.awaitMessageComponent({ time: 60000 });
-  }
+    const answer = reply.awaitMessageComponent({ time: 20000 }).catch(() => undefined)
 
-  @HandleErrorSecondary()
-  getResultButtons(): ButtonBuilder[] {
-    const buttons = [
-      new ButtonBuilder()
-    ]
-
-    return buttons
+    return await answer
   }
 }
