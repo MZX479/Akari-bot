@@ -153,4 +153,13 @@ class Command extends InteractionTemplate {
 
     return await reply.awaitMessageComponent({ time: 60000 });
   }
+
+  @HandleErrorSecondary()
+  getResultButtons(): ButtonBuilder[] {
+    const buttons = [
+      new ButtonBuilder()
+    ]
+
+    return buttons
+  }
 }
