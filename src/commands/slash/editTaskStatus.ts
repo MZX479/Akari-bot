@@ -83,19 +83,20 @@ class Command extends InteractionTemplate {
         previewReply.reply({
           content: '`Status was successfully changed!`',
           components: [],
+          ephemeral: true
         });
         break;
       case 'failed':
         await this.updateTask(authorId, taskId, 'failed');
-        previewReply.reply({
+        previewReply.editReply({
           content: '`Status was successfully changed!`',
-          components: [],
+          components: []
         });
         break;
       case 'cancel':
-        previewReply.reply({
+        previewReply.editReply({
           content: '`See you!`',
-          components: [],
+          components: []
         });
         break;
       default:
