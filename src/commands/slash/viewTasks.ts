@@ -39,8 +39,8 @@ class Command extends InteractionTemplate {
     return this.plannerController.getEmbed()
   }
 
-  @HandleErrorSecondaryAsync()
-  async createTasksEmbed(author: GuildMember, tasks: plannerType['tasks']): Promise<EmbedBuilder> {
+  @HandleErrorSecondary()
+  createTasksEmbed(author: GuildMember, tasks: plannerType['tasks']): EmbedBuilder {
     if(!author || !tasks) throw new Error('Author or tasks were not provided!')
 
     let count = 1

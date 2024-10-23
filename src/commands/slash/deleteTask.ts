@@ -95,7 +95,7 @@ class Command extends InteractionTemplate {
         value: `\`${description}\``,
         inline: true,
       },
-      {name: '🕐 Created:', value: `${time(new Date(creationTime))}`, inline: true}
+      {name: '🕐 Created:', value: `${time(new Date(creationTime), 'R')}`, inline: true}
     )
     .setTimestamp(new Date())
 
