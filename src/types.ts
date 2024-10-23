@@ -238,6 +238,7 @@ export type moderationLogType = {
 
 export type taskType = {
   creationTime: number;
+  originalAuthor: string;
   taskId: string;
   name: string;
   description: string;

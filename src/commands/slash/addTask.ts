@@ -9,6 +9,7 @@ import {
 import { PlannerController } from '@/tools/PlannerController';
 import {
   CommandInteraction,
+  GuildMember,
   SlashCommandBuilder,
   SlashCommandStringOption,
   TextInputBuilder,
@@ -41,6 +42,7 @@ class Command extends InteractionTemplate {
 
   @HandleErrorAsync()
   private async execute() {
+    const authorId = this.interaction.user.id
     const taskName = this.get_argument('task-name')?.value as
       | string
       | undefined;
@@ -70,12 +72,13 @@ class Command extends InteractionTemplate {
     const newTask: taskType = {
       creationTime: new Date().getTime(),
       taskId: uid(16),
+      originalAuthor: authorId,
       name: taskName || 'Task name not provided!',
       description,
       status: 'open',
     };
 
-    await this.addTask(this.interaction.user.id, newTask);
+    await this.addTask(authorId, newTask);
 
     await modalSubmit.reply({ content: '`Successfully added!`' });
 
