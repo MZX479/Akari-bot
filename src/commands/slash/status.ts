@@ -70,7 +70,7 @@ class Command extends InteractionTemplate {
         },
         {
           name: '📤 Last Update',
-          value: '`2:30 pm, 09.02.2024`',
+          value: '`4:15 pm, 10.23.2024`',
           inline: true,
         },
         {
