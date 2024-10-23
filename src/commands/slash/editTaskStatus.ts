@@ -79,6 +79,7 @@ class Command extends InteractionTemplate {
 
     switch (previewReply.customId) {
       case 'success':
+        this.interaction.deferReply()
         await this.updateTask(authorId, taskId, 'successful');
         previewReply.reply({
           content: '`Status was successfully changed!`',
@@ -87,6 +88,7 @@ class Command extends InteractionTemplate {
         });
         break;
       case 'failed':
+        this.interaction.deferReply()
         await this.updateTask(authorId, taskId, 'failed');
         previewReply.editReply({
           content: '`Status was successfully changed!`',
@@ -94,6 +96,7 @@ class Command extends InteractionTemplate {
         });
         break;
       case 'cancel':
+        this.interaction.deferReply()
         previewReply.editReply({
           content: '`See you!`',
           components: []
