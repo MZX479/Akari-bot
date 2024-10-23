@@ -19,6 +19,7 @@ import {
   GuildMember,
   SlashCommandBuilder,
   SlashCommandStringOption,
+  TextChannel,
 } from 'discord.js';
 
 @Slash({
@@ -79,28 +80,19 @@ class Command extends InteractionTemplate {
 
     switch (previewReply.customId) {
       case 'success':
-        this.interaction.deferReply()
         await this.updateTask(authorId, taskId, 'successful');
-        previewReply.reply({
-          content: '`Status was successfully changed!`',
-          components: [],
-          ephemeral: true
-        });
+        await this.replyTrueH(
+          '`Status was successfully changed!`', {components: []}
+        );
         break;
       case 'failed':
-        this.interaction.deferReply()
         await this.updateTask(authorId, taskId, 'failed');
-        previewReply.editReply({
-          content: '`Status was successfully changed!`',
-          components: []
-        });
+        await this.replyTrueH(
+          '`Status was successfully changed!`', {components: []}
+        );
         break;
       case 'cancel':
-        this.interaction.deferReply()
-        previewReply.editReply({
-          content: '`See you!`',
-          components: []
-        });
+        await this.replyTrueH('`See you!`', {components: []});
         break;
       default:
         break;
