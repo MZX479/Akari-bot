@@ -257,3 +257,15 @@ export type plannerType = {
   author: string;
   tasks: Array<taskType>;
 };
+
+export type seriesType = {
+  name: string;
+  notify: boolean;
+  id: string;
+};
+
+export type collectionsNotifierType = {
+  author: string;
+  mainNotify?: boolean;
+  series: seriesType[];
+};

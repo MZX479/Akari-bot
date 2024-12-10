@@ -13,6 +13,7 @@ declare global {
       POLLS_COLLECTION_NAME: string;
       REMINDERS_COLLECTION_NAME: string;
       PLANNER_COLLECTION_NAME: string;
+      NOTIFIERCOLLECTIONS_COLLECTION_NAME: string;
       RULES_CHANNEL_ID?: string;
       GIVEAWAY_CHANNEL_ID?: string;
       GIVEAWAY_ROLE_ID?: string;
